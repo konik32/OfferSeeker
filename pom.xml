@@ -22,6 +22,7 @@
         <mockito.version>1.10.8</mockito.version>
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
         <jdk.version>1.7</jdk.version>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
