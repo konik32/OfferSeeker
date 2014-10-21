@@ -10,23 +10,119 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>WebSpider</module>
         <module>PageProcessor</module>
-        <module>WebPagePuller</module>
         <module>Server</module>
+        <module>WebPagePuller</module>
+        <module>WebSpider</module>
     </modules>
 
     <properties>
+        <spring.version>4.1.1.RELEASE</spring.version>
+        <junit.version>4.11</junit.version>
+        <mockito.version>1.10.8</mockito.version>
         <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
         <jdk.version>1.7</jdk.version>
     </properties>
 
+    <dependencies>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <!-- Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
+            <!-- OfferSeeker -->
+            <dependency>
+                <groupId>pl.edu.agh.offerseeker</groupId>
+                <artifactId>pageprocessor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>pl.edu.agh.offerseeker</groupId>
                 <artifactId>webpage-puller</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>pl.edu.agh.offerseeker</groupId>
+                <artifactId>webspider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- Spring -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- Testing -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
