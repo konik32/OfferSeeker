@@ -1,0 +1,8 @@
+.project
+.settings
+.classpath
+*/target
+*/.settings
+*/.classpath
+ad-web/src/main/resources/spring-config/*.properties
+!ad-web/src/main/resources/spring-config/application.staging.properties
