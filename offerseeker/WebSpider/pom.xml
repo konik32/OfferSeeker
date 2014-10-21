@@ -8,8 +8,15 @@
         <groupId>pl.edu.agh.offerseeker</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>server</artifactId>
+    <artifactId>webspider</artifactId>
     <packaging>jar</packaging>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>pl.edu.agh.offerseeker</groupId>
+            <artifactId>webpage-puller</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
