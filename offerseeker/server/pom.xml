@@ -11,5 +11,16 @@
     <artifactId>server</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>pl.edu.agh.offerseeker</groupId>
+            <artifactId>pageprocessor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>pl.edu.agh.offerseeker</groupId>
+            <artifactId>webspider</artifactId>
+        </dependency>
+    </dependencies>
+
 
 </project>
