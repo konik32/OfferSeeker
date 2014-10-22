@@ -40,7 +40,9 @@
 	</modules>
 
 	<properties>
-		<java.version>1.8</java.version>
+        <guava.version>18.0</guava.version>
+        <easytesting.version>1.4</easytesting.version>
+		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -83,6 +85,19 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+        <!-- Other -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>${easytesting.version}</version>
+        </dependency>
+
 	</dependencies>
 
 </project>
