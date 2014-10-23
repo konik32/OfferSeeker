@@ -44,11 +44,6 @@ public class WebPagePullerTest {
             WebPagePuller pagePuller = new WebPagePuller();
             URL testPageUrl = new URL("http://www.zyvra.org/html/simple.htm");
             String testPage = pagePuller.pullPage(testPageUrl);
-            for (int i = 0; i < testPage.length(); i++) {
-                if (testPage.charAt(i) != refPage.charAt(i)) {
-                    System.out.println("Char: " + i + " at " + testPage.charAt(i));
-                }
-            }
             assertEquals(testPage, refPage);
         } catch (MalformedURLException mExcept) {
             Assert.fail("MalformedURLException has occurred!");

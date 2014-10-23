@@ -14,6 +14,7 @@ public class WebPagePuller implements IWebPagePuller {
     public String pullPage(URL url) throws IOException {
         URLConnection conn = url.openConnection();
         inputStream = new InputStreamReader(conn.getInputStream());
+
         return inputStreamToString(inputStream);
     }
 
