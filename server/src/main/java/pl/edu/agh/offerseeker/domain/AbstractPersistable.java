@@ -1,5 +1,7 @@
 package pl.edu.agh.offerseeker.domain;
 
+import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,60 +11,30 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.Persistable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+/**
+ * 
+ * @author Szymon Konicki
+ *
+ * 
+ */
 @MappedSuperclass
-public abstract class AbstractPersistable implements Persistable<String> {
-
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1045348689435482777L;
-	@Id
-	@GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-	private String id;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.data.domain.Persistable#getId()
-	 */
-	public String getId() {
-
-		return id;
-	}
+public abstract class AbstractPersistable<T extends Serializable> implements Persistable<T> {
 
 	/**
-	 * Sets the id of the entity.
 	 * 
-	 * @param id the id to set
 	 */
-	protected void setId(final String id) {
+	private static final long serialVersionUID = 3675641996995974658L;
 
-		this.id = id;
-	}
+	public abstract T getId();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.data.domain.Persistable#isNew()
-	 */
-	@JsonIgnore
-	public boolean isNew() {
-
-		return null == getId();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 
 		return String.format("Entity of type %s with id: %s", this.getClass().getName(), getId());
+	}
+
+	public boolean isNew() {
+		return null == getId();
 	}
 
 	/*
@@ -104,4 +76,5 @@ public abstract class AbstractPersistable implements Persistable<String> {
 
 		return hashCode;
 	}
+
 }

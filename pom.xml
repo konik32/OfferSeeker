@@ -77,6 +77,10 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+        </dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -86,6 +90,7 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.182</version>
 		</dependency>
+
         <!-- Other -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -98,7 +103,6 @@
             <artifactId>fest-assert</artifactId>
             <version>${easytesting.version}</version>
         </dependency>
-
 	</dependencies>
 
 </project>
