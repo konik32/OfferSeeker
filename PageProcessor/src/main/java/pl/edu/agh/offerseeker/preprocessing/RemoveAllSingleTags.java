@@ -3,7 +3,7 @@ package pl.edu.agh.offerseeker.preprocessing;
 /**
  * Created by bartQH on 2014-10-23.
  */
-public class RemoveAllTags implements IPagePreprocessor {
+public class RemoveAllSingleTags implements IPagePreprocessor {
 
     private StringBuilder builder;
 

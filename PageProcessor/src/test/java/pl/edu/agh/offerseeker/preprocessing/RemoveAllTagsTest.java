@@ -12,7 +12,7 @@ public class RemoveAllTagsTest {
 
     @Test
     public void preprocessTest() {
-        IPagePreprocessor pre = new RemoveAllTags();
+        IPagePreprocessor pre = new RemoveAllSingleTags();
         String page = "<br />This <b>is</b> <hr /></head><body>simple test</body>";
         String testString = pre.preprocess(page);
 
