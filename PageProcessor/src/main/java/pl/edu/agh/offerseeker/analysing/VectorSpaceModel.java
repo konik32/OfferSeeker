@@ -3,6 +3,7 @@ package pl.edu.agh.offerseeker.analysing;
 import pl.edu.agh.offerseeker.preprocessing.RemoveDoubledCharacters;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +25,17 @@ public class VectorSpaceModel {
         }
 
         return frequency;
+    }
+
+    public static double InverseDocumentFrequency(String word, List<Map<String, Integer>> documents) {
+        int N = documents.size();
+        int wordFreq = 0;
+        for (Map<String, Integer> document : documents) {
+            if (document.containsKey(word))
+                wordFreq++;
+        }
+
+        return Math.log10(N / wordFreq);
     }
 
 }
