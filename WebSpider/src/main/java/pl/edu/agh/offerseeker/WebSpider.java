@@ -38,8 +38,6 @@ public interface WebSpider {
 	 *            root URL of the offer site, such as
 	 *            <code>http://www.gumtree.pl/</code>. If the URL points at the
 	 *            root directory of a given domain, it must end with a slash.
-	 * @param alreadyVisitedUrls
-	 *            all previously visited URLs
 	 * @param fetchedUrlsCount
 	 *            number of URLs to return. If the offer site can't provide that
 	 *            many URLs, less will be returned.
@@ -47,8 +45,7 @@ public interface WebSpider {
 	 *         before, or an empty set if couldn't connect to root URL or
 	 *         timeout occurred
 	 */
-	public Set<VisitedUrl> crawl(URL offerSiteUrl, int fetchedUrlsCount,
-			VisitedUrlsDatabase visitedUrlsDatabase)
+	public Set<VisitedUrl> crawl(URL offerSiteUrl, int fetchedUrlsCount)
 			throws CrawlerInternalException;
 
 }

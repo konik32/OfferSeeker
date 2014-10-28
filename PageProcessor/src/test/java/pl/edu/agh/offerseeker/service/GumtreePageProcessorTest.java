@@ -22,8 +22,10 @@ public class GumtreePageProcessorTest {
 
             Offer testOffer = pageProcessor.processPage(offerUrl);
             String testDescription = testOffer.getDescription();
-
+            
             assertEquals(refDescription, testDescription);
+            
+
         } catch (MalformedURLException mExcept) {
             Assert.fail("MalformedURLException has occurred!");
         } catch (IOException ioExcept) {

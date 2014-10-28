@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.edu.agh.offerseeker.domain.PossibleOfferLink;
 import pl.edu.agh.offerseeker.domain.Offer;
-import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
 import pl.edu.agh.offerseeker.service.IPageProcessor;
 /**
  * 

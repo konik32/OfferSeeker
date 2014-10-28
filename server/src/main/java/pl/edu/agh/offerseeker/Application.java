@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import pl.edu.agh.offerseeker.batch.Scheduler;
 import pl.edu.agh.offerseeker.config.BatchConfig;
 import pl.edu.agh.offerseeker.config.PageProcessorConfig;
+import pl.edu.agh.offerseeker.config.WebSpiderConfig;
 /**
  * 
  * @author Szymon Konicki
@@ -19,7 +19,7 @@ import pl.edu.agh.offerseeker.config.PageProcessorConfig;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-@Import({PageProcessorConfig.class,BatchConfig.class, Scheduler.class})
+@Import({PageProcessorConfig.class,BatchConfig.class, Scheduler.class, WebSpiderConfig.class})
 public class Application {
 
 	public static void main(String[] args) {
@@ -27,8 +27,4 @@ public class Application {
 	}
 	
 	
-	
-	
-	
-
 }

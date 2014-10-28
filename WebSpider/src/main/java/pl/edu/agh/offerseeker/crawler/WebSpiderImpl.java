@@ -17,15 +17,27 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class WebSpiderImpl implements WebSpider {
 
-	private String crawlStorageFolder = "crawldata";
-	private int politenessDelay = 200;
-	private int maxDepthOfCrawling = -1;
-	private int maxPagesToFetch = -1;
-	private int numberOfCrawlers = 7;
+	private String crawlStorageFolder;
+	private int politenessDelay;
+	private int maxDepthOfCrawling;
+	private int maxPagesToFetch;
+	private int numberOfCrawlers;
+	
+	private VisitedUrlsDatabase visitedUrlsDatabase;
+	
+
+	public WebSpiderImpl(String crawlStorageFolder, int politenessDelay, int maxDepthOfCrawling, int maxPagesToFetch, int numberOfCrawlers,
+			VisitedUrlsDatabase visitedUrlsDatabase) {
+		this.crawlStorageFolder = crawlStorageFolder;
+		this.politenessDelay = politenessDelay;
+		this.maxDepthOfCrawling = maxDepthOfCrawling;
+		this.maxPagesToFetch = maxPagesToFetch;
+		this.numberOfCrawlers = numberOfCrawlers;
+		this.visitedUrlsDatabase = visitedUrlsDatabase;
+	}
 
 	@Override
-	public Set<VisitedUrl> crawl(URL offerSiteUrl, int fetchedUrlsCount,
-			VisitedUrlsDatabase visitedUrlsDatabase)
+	public Set<VisitedUrl> crawl(URL offerSiteUrl, int fetchedUrlsCount)
 			throws CrawlerInternalException {
 		if (offerSiteUrl.getPath().isEmpty()) {
 			throw new IllegalArgumentException(
@@ -41,16 +53,14 @@ public class WebSpiderImpl implements WebSpider {
 		}
 
 		try {
-			return crawlInner(offerSiteUrl, fetchedUrlsCount,
-					visitedUrlsDatabase);
+			return crawlInner(offerSiteUrl, fetchedUrlsCount);
 		} catch (Exception e) {
 			throw new CrawlerInternalException(
 					"Error creating CrawlController", e);
 		}
 	}
 
-	public Set<VisitedUrl> crawlInner(URL offerSiteUrl, int fetchedUrlsCount,
-			VisitedUrlsDatabase visitedUrlsDatabase) throws Exception {
+	public Set<VisitedUrl> crawlInner(URL offerSiteUrl, int fetchedUrlsCount) throws Exception {
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(politenessDelay);

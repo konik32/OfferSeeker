@@ -1,16 +1,9 @@
 package pl.edu.agh.offerseeker.domain;
 
 import java.io.Serializable;
-import java.util.UUID;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.Persistable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * 
  * @author Szymon Konicki
