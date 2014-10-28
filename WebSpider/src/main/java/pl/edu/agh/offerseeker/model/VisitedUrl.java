@@ -1,5 +1,6 @@
 package pl.edu.agh.offerseeker.model;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -10,7 +11,9 @@ import java.net.URL;
  * @author g.kostalkowicz
  * 
  */
-public class VisitedUrl {
+public class VisitedUrl implements Serializable {
+
+	private static final long serialVersionUID = -4616174483196191569L;
 
 	private int id;
 	private URL url;
@@ -21,7 +24,7 @@ public class VisitedUrl {
 	public VisitedUrl(URL url) {
 		this.url = url;
 	}
-	
+
 	public VisitedUrl(String url) throws MalformedURLException {
 		this.url = new URL(url);
 	}
@@ -52,6 +55,9 @@ public class VisitedUrl {
 		this.url = url;
 	}
 
+	/**
+	 * WARNING not sure if hashCode works properly
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -61,6 +67,9 @@ public class VisitedUrl {
 		return result;
 	}
 
+	/**
+	 * WARNING not sure if equals works properly
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
