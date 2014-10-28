@@ -12,7 +12,7 @@ import pl.edu.agh.offerseeker.crawler.WebSpiderImpl;
 @Configuration
 public class WebSpiderConfig {
 
-//	@Autowired
+	@Autowired
 	private VisitedUrlsDatabase visitedUrlsDatabase;
 
 	@Value("${offerseeker.webspider.crawlStorageFolder}")
