@@ -35,7 +35,8 @@ public class MainController {
 		else offersValidationService.addValidationResponse(offerID, isOffer);
 	}
 
-	@RequestMapping(value = "/statistics")
+	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
+	@ResponseBody
 	public Statistics getStatistics(@RequestParam(value = "username", required = false) String userName, Pageable pageable) {
 		return new Statistics((userName != null) ? userName : "anonymous", 200, 100);
 	}
