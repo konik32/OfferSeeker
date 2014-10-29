@@ -21,5 +21,9 @@ public class OffersValidationService {
 		pageProcessor.evaluateOffer(offerID, (isOffer) ? OfferEvaluation.GOOD : OfferEvaluation.BAD);
 	}
 
-
+	@Async
+	public void addValidationResponse(UUID offerID, boolean isOffer, String userName) {
+		addValidationResponse(offerID, isOffer);
+		//TODO addToStatistics
+	}
 }
