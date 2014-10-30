@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class GumtreePageProcessorTest {
 
-    private String refDescription = "Maleństwa z ulicy pilnie szukają DT lub DS! PILNE! Na podwórku nie mają szans! <br/>Uratujcie je przed zimą! Maluszki mają około 3 miesiące, mają przed sobą całe życie, potrzebują jedynie pomocy! Kociaki znajdują się w Łomiankach. tel:796096481";
+    private String expectedfDescription = "Maleństwa z ulicy pilnie szukają DT lub DS! PILNE! Na podwórku nie mają szans! Uratujcie je przed zimą! Maluszki mają około 3 miesiące, mają przed sobą całe życie, potrzebują jedynie pomocy! Kociaki znajdują się w Łomiankach. tel:796096481";
 
     @Test
     public void processPageTest() {
@@ -23,7 +23,7 @@ public class GumtreePageProcessorTest {
             Offer testOffer = pageProcessor.processPage(offerUrl);
             String testDescription = testOffer.getDescription();
 
-            assertEquals(refDescription, testDescription);
+            assertEquals(expectedfDescription, testDescription);
         } catch (MalformedURLException mExcept) {
             Assert.fail("MalformedURLException has occurred!");
         } catch (IOException ioExcept) {

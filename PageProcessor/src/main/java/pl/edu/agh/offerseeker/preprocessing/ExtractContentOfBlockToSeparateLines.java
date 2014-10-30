@@ -17,6 +17,7 @@ public class ExtractContentOfBlockToSeparateLines implements IPagePreprocessor {
         HashSet<String> lines = new HashSet<String>();
         Document doc = null;
         doc = Jsoup.parse(page);
+
         Elements divs = doc.select("div");
         for (Element x : divs) {
             if (x.hasText())
