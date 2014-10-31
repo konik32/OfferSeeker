@@ -18,18 +18,9 @@ public class GumtreePageProcessor implements IPageProcessor {
 
     @Override
     public Offer processPage(URL url) throws IOException {
-        // get plain web page from url
         Document page = pagePuller.pullPage(url);
-
-        //String[] lineArray = page.split("\n");
-
-        // find line with description
-        //List<String> lines = Arrays.asList(lineArray);
-        //int descIndex = lines.indexOf("<div id=\"ad-desc\" class=\"ad-desc\" class=\"marginTop10px\" >");
-        //descIndex += 3;
-        //String description = lines.get(descIndex);
         String description = page.select("#ad-desc").text();
-        // make an offer
+
         return new Offer(description);
     }
 

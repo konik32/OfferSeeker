@@ -28,9 +28,19 @@ public class VSM {
         for (String key : _docsStats.keySet())
             featureMap.put(key, 0.0);
 
-        for (String word : text.split(" ")) {
+        String[] words = text.split(" ");
+
+        Map<String, Integer> tf = new TreeMap<String, Integer>();
+        for (String word : words) {
+            if (tf.containsKey(word))
+                tf.put(word, tf.get(word) + 1);
+            else
+                tf.put(word, 1);
+        }
+
+        for (String word : words) {
             if (_docsStats.containsKey(word))
-                featureMap.put(word, inverseDocumentFrequency(word));
+                featureMap.put(word, tf.get(word) * inverseDocumentFrequency(word));
         }
 
         List<Double> feature = new ArrayList<Double>();
