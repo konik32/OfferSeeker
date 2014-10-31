@@ -22,7 +22,7 @@ public class Provider {
     public Provider(String baseDir) {
         _baseDir = baseDir;
         _offerDir = _baseDir + "/db/offer/";
-        _antiOfferDir = _baseDir + "/db/orig/";
+        _antiOfferDir = _baseDir + "/db/anti/";
     }
 
     /* Pobranie rozkladu wyrazow ze wszystkich dokumentow */
@@ -63,6 +63,25 @@ public class Provider {
         }
     }
 
+    public boolean isKnown(String processedText) throws IOException {
+        int x = 0;
+        for (String path : getAntiPaths()) {
+            String content = readFile(path);
+            if (content.equals(processedText))
+                return true;
+        }
+
+        return false;
+    }
+
+    public List<String> getOfferPaths() {
+        return getAllPaths(_offerDir);
+    }
+
+    public List<String> getAntiPaths() {
+        return getAllPaths(_antiOfferDir);
+    }
+
     /* Pobiera wszystkie sciezki do plikow istniejacych w folderze */
     private List<String> getAllPaths(String dir) {
         List<String> allPaths = new ArrayList<>();
@@ -72,7 +91,7 @@ public class Provider {
     }
 
     /* Wczytuje caly tekst zawarty w pliku i zamienia go na string */
-    private String readFile(String path) throws IOException {
+    public String readFile(String path) throws IOException {
         File file = new File(path);
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];

@@ -17,7 +17,6 @@ public class ContentInSeparateLines {
 
     /* Kazde potencjalne oglosznie w nowej linii */
     public String preprocess() {
-        removeUselessTags();
         HashSet<String> lines = extractContent();
 
         StringBuilder builder = new StringBuilder();
@@ -49,33 +48,6 @@ public class ContentInSeparateLines {
         }
 
         return lines;
-    }
-
-    /* Zadaniem jest usuniecie zbednych danych ze strony HTML */
-    private void removeUselessTags() {
-        // usuniecie nielamliwej spacji
-        _page.select(":containsOwn(\u00a0)").remove();
-
-        // usuniecie skryptow
-        for (Element element : _page.select("script"))
-            element.remove();
-
-        // usuniecie noscrpits
-        //for (Element element : _page.select("noscript"))
-        //element.remove();
-
-        // usuniecie sekcji head
-        for (Element element : _page.select("head"))
-            element.remove();
-
-        // usuniecie obrazow
-        for (Element element : _page.select("img"))
-            element.remove();
-
-        // usuniecie naglowkow
-        for (Element element : _page.select("h1,h2,h3,h4,h5,h6"))
-            element.remove();
-
     }
 
 }

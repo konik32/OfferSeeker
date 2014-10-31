@@ -18,7 +18,7 @@ public class SVM {
         _param.coef0 = 0;
         _param.nu = 0.5;
         _param.cache_size = 40;
-        _param.C = 1;
+        _param.C = 0.3;
         _param.eps = 1e-3;
         _param.p = 0.1;
         _param.shrinking = 1;
@@ -67,6 +67,7 @@ public class SVM {
 
     public void train(svm_problem prob) {
         _svm = svm.svm_train(prob, _param);
+
     }
 
     public double predict(List<Double> feature) {

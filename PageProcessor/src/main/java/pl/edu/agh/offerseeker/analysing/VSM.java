@@ -38,9 +38,21 @@ public class VSM {
                 tf.put(word, 1);
         }
 
+
+        double max = -1;
+        for (String word : words) {
+            if (_docsStats.containsKey(word)) {
+                double val = tf.get(word) * inverseDocumentFrequency(word);
+                if (val > max)
+                    max = val;
+            }
+        }
+
+        max = max == 0 ? 1 : max;
+
         for (String word : words) {
             if (_docsStats.containsKey(word))
-                featureMap.put(word, tf.get(word) * inverseDocumentFrequency(word));
+                featureMap.put(word, tf.get(word) * inverseDocumentFrequency(word) / max);
         }
 
         List<Double> feature = new ArrayList<Double>();
@@ -48,6 +60,30 @@ public class VSM {
             feature.add(val);
 
         return feature;
+    }
+
+    public List<List<Double>> getOfferFeatures() throws IOException {
+        List<List<Double>> features = new ArrayList<List<Double>>();
+
+        List<String> paths = _provider.getOfferPaths();
+        for (String path : paths) {
+            String content = _provider.readFile(path);
+            features.add(getFeature(content));
+        }
+
+        return features;
+    }
+
+    public List<List<Double>> getAntiFeatures() throws IOException {
+        List<List<Double>> features = new ArrayList<List<Double>>();
+
+        List<String> paths = _provider.getAntiPaths();
+        for (String path : paths) {
+            String content = _provider.readFile(path);
+            features.add(getFeature(content));
+        }
+
+        return features;
     }
 
     /* Pobranie odwrotnej czestotliwosci wystepowania danego wyrazu we wszystich dokumentach */
