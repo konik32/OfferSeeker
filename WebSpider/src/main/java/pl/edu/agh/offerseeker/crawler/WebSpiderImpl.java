@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import pl.edu.agh.offerseeker.WebSpider;
+import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import pl.edu.agh.offerseeker.exceptions.CrawlerInternalException;
-import pl.edu.agh.offerseeker.model.VisitedUrl;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -37,7 +37,7 @@ public class WebSpiderImpl implements WebSpider {
 	}
 
 	@Override
-	public Set<VisitedUrl> crawl(URL offerSiteUrl, int fetchedUrlsCount)
+	public Set<PossibleOfferLink> crawl(URL offerSiteUrl, int fetchedUrlsCount)
 			throws CrawlerInternalException {
 		if (offerSiteUrl.getPath().isEmpty()) {
 			throw new IllegalArgumentException(
@@ -60,7 +60,7 @@ public class WebSpiderImpl implements WebSpider {
 		}
 	}
 
-	public Set<VisitedUrl> crawlInner(URL offerSiteUrl, int fetchedUrlsCount) throws Exception {
+	public Set<PossibleOfferLink> crawlInner(URL offerSiteUrl, int fetchedUrlsCount) throws Exception {
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(politenessDelay);
@@ -95,10 +95,10 @@ public class WebSpiderImpl implements WebSpider {
 		controller.start(Crawler.class, numberOfCrawlers);
 
 		// Collect the results.
-		Set<VisitedUrl> newUrls = new HashSet<>();
+		Set<PossibleOfferLink> newUrls = new HashSet<>();
 		List<Object> crawlersLocalData = controller.getCrawlersLocalData();
 		for (Object localData : crawlersLocalData) {
-			Set<VisitedUrl> crawlerUrls = (Set<VisitedUrl>) localData;
+			Set<PossibleOfferLink> crawlerUrls = (Set<PossibleOfferLink>) localData;
 			newUrls.addAll(crawlerUrls);
 		}
 

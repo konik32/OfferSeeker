@@ -3,6 +3,8 @@ package pl.edu.agh.offerseeker.model;
 import java.util.Date;
 import java.util.Set;
 
+import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
+
 /**
  * Represents a single process of crawl done for given offer site, which has
  * visited a couple of URLs.
@@ -14,7 +16,7 @@ public class Crawl {
 
 	private int id;
 	private Date date;
-	private Set<VisitedUrl> visitedUrls;
+	private Set<PossibleOfferLink> visitedUrls;
 
 	public Crawl() {
 	}
@@ -51,11 +53,11 @@ public class Crawl {
 	 * 
 	 * @return
 	 */
-	public Set<VisitedUrl> getVisitedUrls() {
+	public Set<PossibleOfferLink> getVisitedUrls() {
 		return visitedUrls;
 	}
 
-	public void setVisitedUrls(Set<VisitedUrl> visitedUrls) {
+	public void setVisitedUrls(Set<PossibleOfferLink> visitedUrls) {
 		this.visitedUrls = visitedUrls;
 	}
 

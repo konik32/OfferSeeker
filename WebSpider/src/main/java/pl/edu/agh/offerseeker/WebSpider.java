@@ -3,8 +3,8 @@ package pl.edu.agh.offerseeker;
 import java.net.URL;
 import java.util.Set;
 
+import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import pl.edu.agh.offerseeker.exceptions.CrawlerInternalException;
-import pl.edu.agh.offerseeker.model.VisitedUrl;
 
 /**
  * This interface allows to crawl a given offer site searching for new URLs.
@@ -27,7 +27,7 @@ public interface WebSpider {
 		 * @param url
 		 * @return
 		 */
-		public boolean isAlreadyVisited(VisitedUrl url);
+		public boolean isAlreadyVisited(PossibleOfferLink url);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public interface WebSpider {
 	 *         before, or an empty set if couldn't connect to root URL or
 	 *         timeout occurred
 	 */
-	public Set<VisitedUrl> crawl(URL offerSiteUrl, int fetchedUrlsCount)
+	public Set<PossibleOfferLink> crawl(URL offerSiteUrl, int fetchedUrlsCount)
 			throws CrawlerInternalException;
 
 }

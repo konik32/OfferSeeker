@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import pl.edu.agh.offerseeker.WebSpider.VisitedUrlsDatabase;
-import pl.edu.agh.offerseeker.model.VisitedUrl;
+import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -32,7 +32,7 @@ public class Crawler extends WebCrawler {
 	private VisitedUrlsDatabase visitedUrlsDatabase;
 	private VisitedUrlsCounter visitedUrlsCounter;
 	private String domain;
-	private Set<VisitedUrl> newUrls = new HashSet<VisitedUrl>();
+	private Set<PossibleOfferLink> newUrls = new HashSet<PossibleOfferLink>();
 
 	@Override
 	public void init(int id, CrawlController crawlController) {
@@ -79,7 +79,7 @@ public class Crawler extends WebCrawler {
 				return;
 			}
 
-			VisitedUrl currentUrl = new VisitedUrl(new URL(page.getWebURL()
+			PossibleOfferLink currentUrl = new PossibleOfferLink(new URL(page.getWebURL()
 					.getURL()));
 
 			if (!visitedUrlsDatabase.isAlreadyVisited(currentUrl)) {

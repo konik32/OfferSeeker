@@ -25,9 +25,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.data.domain.Sort.Direction;
 
-import pl.edu.agh.offerseeker.batch.PossibleOfferProcessor;
+import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import pl.edu.agh.offerseeker.domain.Offer;
-import pl.edu.agh.offerseeker.domain.PossibleOfferLink;
+import pl.edu.agh.offerseeker.job.PossibleOfferProcessor;
 import pl.edu.agh.offerseeker.repository.OfferRepository;
 import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
 

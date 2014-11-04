@@ -1,9 +1,9 @@
-package pl.edu.agh.offerseeker.batch;
+package pl.edu.agh.offerseeker.job;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.edu.agh.offerseeker.domain.PossibleOfferLink;
+import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import pl.edu.agh.offerseeker.domain.Offer;
 import pl.edu.agh.offerseeker.service.IPageProcessor;
 /**

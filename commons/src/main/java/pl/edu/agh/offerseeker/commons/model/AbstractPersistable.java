@@ -1,4 +1,4 @@
-package pl.edu.agh.offerseeker.domain;
+package pl.edu.agh.offerseeker.commons.model;
 
 import java.io.Serializable;
 import javax.persistence.MappedSuperclass;

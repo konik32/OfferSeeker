@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import pl.edu.agh.offerseeker.commons.model.AbstractPersistable;
+
+
 /**
  * 
  * @author Szymon Konicki
