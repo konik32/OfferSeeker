@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import pl.edu.agh.offerseeker.domain.Offer;
-import pl.edu.agh.offerseeker.domain.Statistics;
+import pl.edu.agh.offerseeker.repository.StatisticRepository;
 import pl.edu.agh.offerseeker.service.OffersValidationService;
+
+import javax.transaction.Transactional;
 
 /**
  * @author Szymon Konicki
@@ -21,6 +23,9 @@ public class MainController {
 	@Autowired
 	private OffersValidationService offersValidationService;
 
+	@Autowired
+	private StatisticRepository repository;
+
 	@RequestMapping(value = "/offers", method = RequestMethod.GET)
 	@ResponseBody
 	public Offer getOffers(@RequestParam("keywords") String keywords, Pageable pageable) {
@@ -30,14 +35,14 @@ public class MainController {
 
 	@RequestMapping(value = "/offers/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public void getOfferValidation(@RequestParam("isOffer") boolean isOffer, @PathVariable("id") UUID offerID, @RequestParam(value = "userName", required = false) String userName) {
-		if (userName != null) offersValidationService.addValidationResponse(offerID, isOffer, userName);
-		else offersValidationService.addValidationResponse(offerID, isOffer);
+	public void getOfferValidation(@RequestParam("isOffer") boolean isOffer, @PathVariable("id") UUID offerID) {
+		offersValidationService.addValidationResponse(offerID, isOffer);
+		offersValidationService.saveStatisticToDatabase(offerID, isOffer);
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
 	@ResponseBody
-	public Statistics getStatistics(@RequestParam(value = "username", required = false) String userName, Pageable pageable) {
-		return new Statistics((userName != null) ? userName : "anonymous", 200, 100);
+	public Long getStatistics(@RequestParam(value = "isOffer") boolean isOffer, Pageable pageable) {
+		return repository.countByIsOffer(isOffer);
 	}
 }
