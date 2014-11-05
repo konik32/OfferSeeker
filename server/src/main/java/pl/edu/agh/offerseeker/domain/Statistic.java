@@ -1,5 +1,7 @@
 package pl.edu.agh.offerseeker.domain;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,12 +23,13 @@ public class Statistic {
 	private boolean isOffer;
 
 	@Column
-	private Date timestamp;
+	@Type(type = "date")
+	private Date validationDate;
 
 	public Statistic(UUID id, boolean isOffer) {
 		this.id = id;
 		this.isOffer = isOffer;
-		this.timestamp = new Date();
+		this.validationDate = new Date();
 	}
 
 	public Statistic() {
@@ -48,11 +51,11 @@ public class Statistic {
 		this.isOffer = isOffer;
 	}
 
-	public Date getTimestamp() {
-		return timestamp;
+	public Date getValidationDate() {
+		return validationDate;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setValidationDate(Date validationDate) {
+		this.validationDate = validationDate;
 	}
 }
