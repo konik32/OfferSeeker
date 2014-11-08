@@ -19,8 +19,12 @@ public class Provider {
     private Map<String, Integer> _docsStats;
     private List<Map<String, Integer>> _docs;
 
-    public Provider(String baseDir) {
+    public Provider(String baseDir) throws IOException {
         _baseDir = baseDir;
+        new File(_baseDir + "/db/").mkdirs();
+        new File(_baseDir + "/db/offer").mkdirs();
+        new File(_baseDir + "/db/anti").mkdirs();
+        new File(_baseDir + "/db/orig").mkdirs();
         _offerDir = _baseDir + "/db/offer/";
         _antiOfferDir = _baseDir + "/db/anti/";
     }
