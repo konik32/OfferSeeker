@@ -15,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * 
+ * Entity for storing possible offers urls 
  * @author Szymon Konicki
  *
  */
@@ -37,9 +37,11 @@ public class PossibleOfferLink extends AbstractPersistable<Long> {
 	private URL url;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date timestamp;
 
 	public PossibleOfferLink() {
+		this.timestamp = new Date();
 	}
 
 	public PossibleOfferLink(URL url) {
@@ -48,7 +50,6 @@ public class PossibleOfferLink extends AbstractPersistable<Long> {
 
 	public PossibleOfferLink(String url) throws MalformedURLException {
 		this.url = new URL(url);
-		this.timestamp = new Date();
 	}
 
 	/**
@@ -72,6 +73,14 @@ public class PossibleOfferLink extends AbstractPersistable<Long> {
 	@Override
 	public Long getId() {
 		return id;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

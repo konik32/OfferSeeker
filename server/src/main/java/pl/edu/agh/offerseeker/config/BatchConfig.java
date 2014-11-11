@@ -27,6 +27,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import pl.edu.agh.offerseeker.domain.Offer;
+import pl.edu.agh.offerseeker.job.OfferWritter;
 import pl.edu.agh.offerseeker.job.PossibleOfferProcessor;
 import pl.edu.agh.offerseeker.repository.OfferRepository;
 import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
@@ -93,10 +94,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
 
 	@Bean(name="offerWriter")
 	public ItemWriter<Offer> offerWriter() {
-		RepositoryItemWriter<Offer> writer = new RepositoryItemWriter<Offer>();
-		writer.setRepository(offerRepository);
-		writer.setMethodName("save");
-		return writer;
+		return new OfferWritter();
 	}
 	
 	@Bean

@@ -5,13 +5,14 @@ import org.springframework.stereotype.Service;
 
 import pl.edu.agh.offerseeker.WebSpider.VisitedUrlsDatabase;
 import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
+import pl.edu.agh.offerseeker.repository.OfferRepository;
 import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
 
 @Service
 public class VisitedUrlDatabaseImpl implements VisitedUrlsDatabase {
 
 	@Autowired
-	private PossibleOfferLinkRepository repository;
+	private OfferRepository repository;
 
 	@Override
 	public boolean isAlreadyVisited(PossibleOfferLink url) {
