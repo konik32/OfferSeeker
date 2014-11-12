@@ -1,5 +1,6 @@
 package pl.edu.agh.offerseeker.analysing;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -16,16 +17,14 @@ public class VectorSpaceModelTest {
     @Test
     public void TermFrequencyTest() {
         String testString = "this is test this test test";
-        String expectedString = "test:3 this:2 is:1 ";
-        String actualString = "";
+        Map<String, Integer> expectedFrequency = ImmutableMap.of("test", 3, "this", 2, "is", 1);
 
         Map<String, Integer> frequency = VectorSpaceModel.TermFrequency(testString);
 
-        for (String key : frequency.keySet()) {
-            actualString += key + ":" + frequency.get((key)) + " ";
+        assertEquals(expectedFrequency.size(), frequency.size());
+        for(String key : expectedFrequency.keySet()) {
+            assertEquals(expectedFrequency.get(key), frequency.get(key));
         }
-
-        assertEquals(expectedString, actualString);
     }
 
     @Test
