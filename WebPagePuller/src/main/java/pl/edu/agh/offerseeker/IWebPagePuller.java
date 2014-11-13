@@ -9,7 +9,7 @@ import java.net.URL;
 public interface IWebPagePuller {
     /**
      * @param url of page to be pulled
-     * @return pulled page converted to string
+     * @return pulled page converted to JSoupDocument
      */
-    String pullPage(URL url) throws IOException;
+    org.jsoup.nodes.Document pullPage(URL url) throws IOException;
 }

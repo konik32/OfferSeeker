@@ -10,15 +10,18 @@ import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 
-public class GumtreePageProcessorTest {
+/**
+ * Created by bartQH on 2014-11-08.
+ */
+public class SVMPageProcessorTest {
 
-    private String expectedfDescription = "Maleństwa z ulicy pilnie szukają DT lub DS! PILNE! Na podwórku nie mają szans! Uratujcie je przed zimą! Maluszki mają około 3 miesiące, mają przed sobą całe życie, potrzebują jedynie pomocy! Kociaki znajdują się w Łomiankach. tel:796096481";
+    private String expectedfDescription = "odstąpie tygodniowy darmowy pobyt coroczny na teneryfie w ekskluzywnym apartamencie w regency club. pobyt przypada zawsze w 42 tygodniu roku, ale istnieje mozliwość zamiany. apartament znajduje się w najpiękniejszej części teneryfy w los americas. istnieje mozliwość zamaiany tygodniowego pobytu z teneryfy na 2-tygodniowy darmowy pobyt w innych eksklizywnych ośrodkach na świecje np. polecam toskanię lub meksyk.przed ewentualną tranzakcją darmowy 7-dniowy pobyt na teneryfie";
 
     @Test
     public void processPageTest() {
         try {
-            URL offerUrl = new URL("http://www.gumtree.pl/cp-koty-i-kocieta/praga-poludnie/puchate-malenstwa-z-ulicy-do-pilnej-adopcji-uratujcie-je-612845532");
-            IPageProcessor pageProcessor = new GumtreePageProcessor();
+            URL offerUrl = new URL("http://olx.pl/oferta/teneryfa-CID767-ID6blAD.html#5aca508353;promoted");
+            IPageProcessor pageProcessor = new SVMPageProcessor();
 
             Offer testOffer = pageProcessor.processPage(offerUrl);
             String testDescription = testOffer.getDescription();
@@ -32,7 +35,6 @@ public class GumtreePageProcessorTest {
             Assert.fail("Unexpected exception! \n\tMore info: "
                     + eExcept.getMessage());
         }
-
     }
 
 }
