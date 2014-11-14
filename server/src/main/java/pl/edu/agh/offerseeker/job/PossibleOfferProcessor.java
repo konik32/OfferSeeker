@@ -24,7 +24,7 @@ public class PossibleOfferProcessor implements ItemProcessor<PossibleOfferLink, 
 	@Override
 	public Offer process(PossibleOfferLink offerLink) throws Exception {
 		pl.edu.agh.offerseeker.model.Offer processedOffer = pageProcessor.processPage(offerLink.getUrl());
-		if (processedOffer.getDescription().length() > 16384 || processedOffer.getDescription().isEmpty())
+		if (processedOffer == null || processedOffer.getDescription().length() > 16384 || processedOffer.getDescription().isEmpty())
 			return null;
 		return new Offer(processedOffer.getId(), processedOffer.getDescription(), offerLink.getUrl());
 	}
