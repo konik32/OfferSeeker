@@ -72,6 +72,7 @@ public class Scheduler {
 	 * @throws JobParametersInvalidException
 	 */
 	@Scheduled(cron = "${offerseeker.schedule.pageProccessing.cron}")
+//	@Scheduled(fixedRate=10000)
 	public void schedulePageProcessing() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
 			JobParametersInvalidException {
 		List<JobInstance> jobInstance = jobExplorer.findJobInstancesByJobName(processPossibleOffersJob.getName(), 0, 1);
@@ -93,6 +94,7 @@ public class Scheduler {
 	 * @throws MalformedURLException
 	 */
 	@Scheduled(cron = "${offerseeker.schedule.crawlerJob.cron}")
+//	@Scheduled(fixedRate=10000)
 	public void scheduleCrawlerJob() throws MalformedURLException {
 		crawlerJob.init();
 	}

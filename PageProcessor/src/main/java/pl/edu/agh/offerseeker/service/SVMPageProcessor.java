@@ -20,92 +20,97 @@ import java.util.UUID;
 
 public class SVMPageProcessor implements IPageProcessor {
 
-    private Provider provider;
-    private List<Map<String, Integer>> docs;
-    private Map<String, Integer> docsStats;
-    private VSM vsm;
-    private Collector collector;
+	private Provider provider;
+	private List<Map<String, Integer>> docs;
+	private Map<String, Integer> docsStats;
+	private VSM vsm;
+	private Collector collector;
 
-    public SVMPageProcessor() throws IOException {
-        provider = new Provider(System.getProperty("user.dir"));
-        docs = provider.getDocs();
-        docsStats = provider.getDocsStats();
-        vsm = new VSM(provider);
-        collector = new Collector(System.getProperty("user.dir"));
-    }
+	public SVMPageProcessor(String dbFilesPath) throws IOException {
+		provider = new Provider(dbFilesPath);
+		docs = provider.getDocs();
+		docsStats = provider.getDocsStats();
+		vsm = new VSM(provider);
+		collector = new Collector(dbFilesPath);
+	}
 
-    public static void main(String[] args) throws IOException {
-        SVMPageProcessor p = new SVMPageProcessor();
-        URL url = new URL("http://olx.pl/oferta/odtwarzacz-blu-ray-sony-komplet-CID99-ID7A8NT.html#14f4effa46;promoted");
-        System.out.println("GUM: " + new GumtreePageProcessor().processPage(url).getDescription());
-        Offer offer = p.processPage(url);
-        if (offer == null) System.out.println("Nie znaleziono!");
-        else {
-            System.out.println("SVM: " + offer.getDescription() + " << " + offer.getId());
-            p.evaluateOffer(offer.getId(), OfferEvaluation.GOOD);
-        }
-    }
+	public SVMPageProcessor() throws IOException {
+		this(System.getProperty("user.home") +"/offer_seeker");
+	}
 
-    @Override
-    public Offer processPage(URL url) throws IOException {
-        List<List<Double>> offerFeatures = vsm.getOfferFeatures();
-        List<List<Double>> antiFeatures = vsm.getAntiFeatures();
+	public static void main(String[] args) throws IOException {
+		SVMPageProcessor p = new SVMPageProcessor();
+		URL url = new URL("http://olx.pl/oferta/odtwarzacz-blu-ray-sony-komplet-CID99-ID7A8NT.html#14f4effa46;promoted");
+		System.out.println("GUM: " + new GumtreePageProcessor().processPage(url).getDescription());
+		Offer offer = p.processPage(url);
+		if (offer == null)
+			System.out.println("Nie znaleziono!");
+		else {
+			System.out.println("SVM: " + offer.getDescription() + " << " + offer.getId());
+			p.evaluateOffer(offer.getId(), OfferEvaluation.GOOD);
+		}
+	}
 
-        List<List<Double>> features = new ArrayList<List<Double>>();
-        List<Double> classes = new ArrayList<Double>();
+	@Override
+	public Offer processPage(URL url) throws IOException {
+		List<List<Double>> offerFeatures = vsm.getOfferFeatures();
+		List<List<Double>> antiFeatures = vsm.getAntiFeatures();
 
-        for (List<Double> curr : offerFeatures) {
-            classes.add(-1.0);
-            features.add(curr);
-        }
+		List<List<Double>> features = new ArrayList<List<Double>>();
+		List<Double> classes = new ArrayList<Double>();
 
-        for (List<Double> curr : antiFeatures) {
-            classes.add(1.0);
-            features.add(curr);
-        }
+		for (List<Double> curr : offerFeatures) {
+			classes.add(-1.0);
+			features.add(curr);
+		}
 
-        SVM svm = new SVM();
-        svm_problem prob = svm.getProblem(features, classes);
+		for (List<Double> curr : antiFeatures) {
+			classes.add(1.0);
+			features.add(curr);
+		}
 
-        svm.train(prob);
+		SVM svm = new SVM();
+		svm_problem prob = svm.getProblem(features, classes);
 
-        WebPagePuller puller = new WebPagePuller();
-        Document txt = puller.pullPage(url);
-        String page = new ContentInSeparateLines(txt).preprocess();
+		svm.train(prob);
 
-        String offerSupp = "";
-        String offerDescription = "";
-        for (String curr : page.split("\n")) {
-            if (offerSupp.length() < curr.length()) {
-                if (!provider.isKnown(curr)) {
-                    offerSupp = curr;
-                }
-            }
-            if (svm.predict(vsm.getFeature(curr)) == -1.0) {
-                if (!provider.isKnown(curr)) {
-                    Offer offer = new Offer(curr);
-                    collector.collect(txt);
-                    collector.collect(curr, offer.getId());
-                    return offer;
-                }
-            }
-        }
+		WebPagePuller puller = new WebPagePuller();
+		Document txt = puller.pullPage(url);
+		String page = new ContentInSeparateLines(txt).preprocess();
 
-        if (offerSupp != "") {
-            Offer offer = new Offer(offerSupp);
-            collector.collect(txt);
-            collector.collect(offerSupp, offer.getId());
-            return offer;
-        }
+		String offerSupp = "";
+		String offerDescription = "";
+		for (String curr : page.split("\n")) {
+			if (offerSupp.length() < curr.length()) {
+				if (!provider.isKnown(curr)) {
+					offerSupp = curr;
+				}
+			}
+			if (svm.predict(vsm.getFeature(curr)) == -1.0) {
+				if (!provider.isKnown(curr)) {
+					Offer offer = new Offer(curr);
+					collector.collect(txt);
+					collector.collect(curr, offer.getId());
+					return offer;
+				}
+			}
+		}
 
-        return null;
-    }
+		if (offerSupp != "") {
+			Offer offer = new Offer(offerSupp);
+			collector.collect(txt);
+			collector.collect(offerSupp, offer.getId());
+			return offer;
+		}
 
-    @Override
-    public void evaluateOffer(UUID offerID, OfferEvaluation evaluation) {
-        if (evaluation == OfferEvaluation.BAD) {
-            collector.moveToAnti(offerID);
-        }
-    }
+		return null;
+	}
+
+	@Override
+	public void evaluateOffer(UUID offerID, OfferEvaluation evaluation) {
+		if (evaluation == OfferEvaluation.BAD) {
+			collector.moveToAnti(offerID);
+		}
+	}
 
 }
