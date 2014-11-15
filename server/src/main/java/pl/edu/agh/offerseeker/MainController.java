@@ -3,18 +3,21 @@ package pl.edu.agh.offerseeker;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import pl.edu.agh.offerseeker.domain.Domain;
 import pl.edu.agh.offerseeker.domain.Offer;
+import pl.edu.agh.offerseeker.domain.Statistic;
 import pl.edu.agh.offerseeker.repository.DomainRepository;
 import pl.edu.agh.offerseeker.repository.StatisticRepository;
 import pl.edu.agh.offerseeker.service.OffersFullTextSearchService;
@@ -55,10 +58,25 @@ public class MainController {
 		offersValidationService.saveStatisticToDatabase(offerID, isOffer);
 	}
 
-	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
+	@RequestMapping(value = "/statistics/count", method = RequestMethod.GET)
 	@ResponseBody
-	public Long getStatistics(@RequestParam(value = "isOffer") boolean isOffer, Pageable pageable) {
-		return repository.countByIsOffer(isOffer);
+	public Long getStatistics(@RequestParam(value = "isOffer", required = false) Boolean isOffer, Pageable pageable) {
+		if(isOffer != null) return repository.countByIsOffer(isOffer);
+		else return  repository.count();
+	}
+
+	@RequestMapping(value = "/statistics/list", method = RequestMethod.GET)
+	@ResponseBody
+	public Iterable<Statistic> getAllStatistics(Pageable pageable,
+	                                            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date startDate,
+	                                            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date endDate) {
+		if(startDate != null && endDate != null)
+			return repository.findByValidationDateBetween(startDate, endDate);
+		else if(startDate != null)
+			return repository.findByValidationDateGreaterThanOrValidationDate(startDate, startDate);
+		else if(endDate != null)
+			return repository.findByValidationDateLessThanOrValidationDate(endDate, endDate);
+		else return repository.findAll();
 	}
 
 	@RequestMapping(value = "/domains", method = RequestMethod.POST)
