@@ -14,7 +14,8 @@ TEMPLATE = app
 QT   += network
 
 SOURCES += main.cpp\
-        client.cpp
+        client.cpp \
+    Controller.cpp
 
 HEADERS  += client.h
 

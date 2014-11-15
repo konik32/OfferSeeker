@@ -15,22 +15,11 @@ Client::~Client()
 
 void Client::on_pushButton_2_clicked()
 {
-    ui->lineEdit->setText("działa");
-    QEventLoop eventLoop;
-    QNetworkAccessManager mgr;
-    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
-    QNetworkRequest req( QUrl( QString("http://192.168.200.100:8080/api/statistics/count") ) );
-    QNetworkReply *reply = mgr.get(req);
-    eventLoop.exec(); // blocks stack until "finished()" has been called
+    ui->lineEdit->setText("");
+}
 
-    if (reply->error() == QNetworkReply::NoError) {
-        //success
-        qDebug() << "Success" <<reply->readAll();
-        delete reply;
-    }
-    else {
-        //failure
-        qDebug() << "Failure" <<reply->errorString();
-        delete reply;
-    }
+void Client::on_pushButton_clicked(){
+
+    ui->textEdit->setText(postKeyWords());
+
 }

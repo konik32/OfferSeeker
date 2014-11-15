@@ -9,6 +9,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QApplication>
 
 namespace Ui {
 class Client;
@@ -24,9 +25,13 @@ public:
 
 private slots:
     void on_pushButton_2_clicked();
+    void on_pushButton_clicked();
 
 private:
     Ui::Client *ui;
 };
+
+QString postKeyWords();
+void getOffers();
 
 #endif // CLIENT_H
