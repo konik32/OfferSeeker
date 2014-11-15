@@ -1052,5 +1052,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>lineEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>730</x>
+     <y>565</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
