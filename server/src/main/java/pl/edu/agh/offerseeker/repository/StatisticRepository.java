@@ -17,5 +17,7 @@ public interface StatisticRepository extends PagingAndSortingRepository<Statisti
 	Iterable<Statistic> findByValidationDateBetween(Date startDate, Date endDate);
 	Iterable<Statistic> findByValidationDateGreaterThanOrValidationDate(Date startDate, Date startDate1);
 	Iterable<Statistic> findByValidationDateLessThanOrValidationDate(Date endDate, Date endDate1);
+	Iterable<Statistic> findByValidationDateBetweenAndIsOffer(Date startDate, Date endDate, Boolean isOffer);
+	Iterable<Statistic> findByIsOffer(Boolean isOffer);
 }
 

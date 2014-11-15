@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class MainController {
 
 	@Autowired
 	private DomainRepository domainRepository;
-	
+
 	@Autowired
 	private OffersFullTextSearchService offersSearchService;
 
@@ -69,13 +70,34 @@ public class MainController {
 	@ResponseBody
 	public Iterable<Statistic> getAllStatistics(Pageable pageable,
 	                                            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date startDate,
-	                                            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date endDate) {
-		if(startDate != null && endDate != null)
+	                                            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")Date endDate,
+												@RequestParam(value = "isOffer", required = false) Boolean isOffer){
+		if(startDate != null && endDate != null && isOffer != null)
+			return repository.findByValidationDateBetweenAndIsOffer(startDate, endDate, isOffer);
+		else if(startDate != null && endDate != null)
 			return repository.findByValidationDateBetween(startDate, endDate);
+		else if(startDate != null && isOffer != null) {
+			Iterable<Statistic> list = repository.findByValidationDateGreaterThanOrValidationDate(startDate, startDate);
+			LinkedList<Statistic> statisticsList = new LinkedList<>();
+			for(Statistic statistic : list)
+				if(statistic.isOffer() == isOffer)
+					statisticsList.add(statistic);
+			return statisticsList;
+		}
 		else if(startDate != null)
 			return repository.findByValidationDateGreaterThanOrValidationDate(startDate, startDate);
+		else if(endDate != null && isOffer != null) {
+			Iterable<Statistic> list = repository.findByValidationDateLessThanOrValidationDate(endDate, endDate);
+			LinkedList<Statistic> statisticsList = new LinkedList<>();
+			for(Statistic statistic : list)
+				if(statistic.isOffer() == isOffer)
+					statisticsList.add(statistic);
+			return statisticsList;
+		}
 		else if(endDate != null)
 			return repository.findByValidationDateLessThanOrValidationDate(endDate, endDate);
+		else if(isOffer != null)
+			return repository.findByIsOffer(isOffer);
 		else return repository.findAll();
 	}
 

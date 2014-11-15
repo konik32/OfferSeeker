@@ -1,5 +1,10 @@
 #include "communicationservice.h"
 #include "client.h"
+#include "statistic.h"
+#include "offer.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 CommunicationService::CommunicationService() {
     serverAddress = "http://localhost:8080/api";
@@ -12,6 +17,85 @@ CommunicationService::CommunicationService(QString serverAddress) {
 void CommunicationService::setServerAddress(QString serverAddress) {
     this->serverAddress = serverAddress;
 }
+
+long CommunicationService::getStatisticCount() {
+    return getResponseFromUrl(QUrl(serverAddress+"/statistics/count")).toLong();
+}
+
+long CommunicationService::getStatisticCount(bool isOffer) {
+    return getResponseFromUrl(QUrl(serverAddress+"/statistics/count?isOffer="+QString::number(isOffer))).toLong();
+}
+
+bool CommunicationService::setOfferValidation(Offer offer, bool valid) {
+    return setOfferValidation(offer.getId(), valid);
+}
+
+bool CommunicationService::setOfferValidation(QUuid offerId, bool valid) {
+    int statusCode = getResponseCodeFromUrl(QUrl(serverAddress+"/offers/"+offerId.toString().mid(1,36).toUpper()+"?isOffer="+QString::number(valid)));
+    if(statusCode == 200) return true;
+    else return false;
+}
+
+QList<Statistic> CommunicationService::getListOfStatistics() {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list"));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatistics(bool isOffer) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?isOffer="+QString::number(isOffer)));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatistics(QDateTime startDate, QDateTime endDate) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?startDate="+startDate.toString("yyyy-MM-dd")+"&endDate="+endDate.toString("yyyy-MM-dd")));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatistics(QDateTime startDate, QDateTime endDate, bool isOffer) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?startDate="+startDate.toString("yyyy-MM-dd")+"&endDate="+endDate.toString("yyyy-MM-dd")+"&isOffer="+QString::number(isOffer)));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatisticsSince(QDateTime startDate) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?startDate="+startDate.toString("yyyy-MM-dd")));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatisticsSince(QDateTime startDate, bool isOffer) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?startDate="+startDate.toString("yyyy-MM-dd")+"&isOffer="+QString::number(isOffer)));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatisticsOlderThan(QDateTime endDate) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?endDate="+endDate.toString("yyyy-MM-dd")));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Statistic> CommunicationService::getListOfStatisticsOlderThan(QDateTime endDate, bool isOffer) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?endDate="+endDate.toString("yyyy-MM-dd")+"&isOffer="+QString::number(isOffer)));
+    return getStatisticsListFromJSON(jsonString);
+}
+
+QList<Offer> CommunicationService::getOffers(QString keywords) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\""));
+    QList<Offer> offersList;
+
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
+    QJsonObject jsonMain = jsonDocument.object();
+    QJsonArray jsonArray = jsonMain["content"].toArray();
+
+    for(int i= 0; i< jsonArray.size(); i++) {
+        QJsonObject jsonObject = jsonArray[i].toObject();
+        QUuid id = QUuid(jsonObject["id"].toString());
+        QString description = jsonObject["description"].toString();
+        QString url = jsonObject["url"].toString();
+        offersList.append(Offer(id, description, url));
+    }
+
+    return offersList;
+}
+
+/*********************Private methods****************************/
 
 QString CommunicationService::getResponseFromUrl(QUrl url){
     QEventLoop eventLoop;
@@ -36,20 +120,18 @@ int CommunicationService::getResponseCodeFromUrl(QUrl url) {
     return statusCode.toInt();
 }
 
-long CommunicationService::getStatisticCount() {
-    return getResponseFromUrl(QUrl(serverAddress+"/statistics/count")).toLong();
-}
+QList<Statistic> CommunicationService::getStatisticsListFromJSON(QString jsonString) {
+    QList<Statistic> statisticsList;
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
+    QJsonArray jsonArray = jsonDocument.array();
 
-long CommunicationService::getStatisticCount(bool isOffer) {
-    return getResponseFromUrl(QUrl(serverAddress+"/statistics/count?isOffer="+QString::number(isOffer))).toLong();
-}
+    for(int i= 0; i< jsonArray.size(); i++) {
+        QJsonObject jsonObject = jsonArray[i].toObject();
+        QUuid id = QUuid(jsonObject["id"].toString());
+        bool valid = jsonObject["offer"].toBool();
+        QDateTime date = QDateTime::fromString(jsonObject["validationDate"].toString(), "yyyy-MM-dd");
+        statisticsList.append(Statistic(id, valid, date));
+    }
 
-bool CommunicationService::setOfferValidation(Offer offer, bool valid) {
-    return setOfferValidation(offer.getId(), valid);
-}
-
-bool CommunicationService::setOfferValidation(QUuid offerId, bool valid) {
-    int statusCode = getResponseCodeFromUrl(QUrl(serverAddress+"/offers/"+offerId.toString()+"?isOffer="+QString::number(valid)));
-    if(statusCode == 200) return true;
-    else return false;
+    return statisticsList;
 }

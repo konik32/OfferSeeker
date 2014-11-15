@@ -12,6 +12,7 @@ private:
     QString serverAddress;
     QString getResponseFromUrl(QUrl url);
     int getResponseCodeFromUrl(QUrl url);
+    QList<Statistic> getStatisticsListFromJSON(QString jsonString);
 
 public:
     CommunicationService();
@@ -24,9 +25,13 @@ public:
     bool setOfferValidation(Offer offer, bool valid);
     bool setOfferValidation(QUuid offerId, bool valid);
     QList<Statistic> getListOfStatistics();
+    QList<Statistic> getListOfStatistics(bool isOffer);
     QList<Statistic> getListOfStatistics(QDateTime startDate, QDateTime endDate);
+    QList<Statistic> getListOfStatistics(QDateTime startDate, QDateTime endDate, bool isOffer);
     QList<Statistic> getListOfStatisticsSince(QDateTime startDate);
-    QList<Statistic> getListOfStatisticsOldestBy(QDateTime endDate);
+    QList<Statistic> getListOfStatisticsSince(QDateTime startDate, bool isOffer);
+    QList<Statistic> getListOfStatisticsOlderThan(QDateTime endDate);
+    QList<Statistic> getListOfStatisticsOlderThan(QDateTime endDate, bool isOffer);
 
     //Offers
     QList<Offer> getOffers(QString keywords);
