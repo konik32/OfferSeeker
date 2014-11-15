@@ -15,8 +15,14 @@ QT   += network
 
 SOURCES += main.cpp\
         client.cpp \
-    Controller.cpp
+    Controller.cpp \
+    offer.cpp \
+    statistic.cpp \
+    communicationservice.cpp
 
-HEADERS  += client.h
+HEADERS  += client.h \
+    offer.h \
+    statistic.h \
+    communicationservice.h
 
 FORMS    += client.ui

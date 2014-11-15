@@ -263,6 +263,15 @@
      <pointsize>10</pointsize>
     </font>
    </property>
+   <property name="cursor">
+    <cursorShape>IBeamCursor</cursorShape>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
@@ -941,6 +950,9 @@
      <bold>true</bold>
     </font>
    </property>
+   <property name="cursor" stdset="0">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
    <property name="lineWidth">
     <number>0</number>
    </property>
@@ -1036,22 +1048,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
-  <connection>
-   <sender>lineEdit</sender>
-   <signal>textEdited(QString)</signal>
-   <receiver>label_2</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>232</x>
-     <y>113</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>120</x>
-     <y>127</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>pushButton_2</sender>
    <signal>clicked()</signal>

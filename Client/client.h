@@ -10,6 +10,9 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QApplication>
+#include <QUuid>
+#include <QDateTime>
+#include "communicationservice.h"
 
 namespace Ui {
 class Client;
@@ -29,6 +32,7 @@ private slots:
 
 private:
     Ui::Client *ui;
+    CommunicationService *communicationService;
 };
 
 QString postKeyWords();

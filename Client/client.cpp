@@ -6,6 +6,7 @@ Client::Client(QWidget *parent) :
     ui(new Ui::Client)
 {
     ui->setupUi(this);
+    communicationService = new CommunicationService();
 }
 
 Client::~Client()
@@ -19,7 +20,6 @@ void Client::on_pushButton_2_clicked()
 }
 
 void Client::on_pushButton_clicked(){
-
-    ui->textEdit->setText(postKeyWords());
+    ui->textEdit->setText(QString::number(communicationService->getStatisticCount(true)));
 
 }
