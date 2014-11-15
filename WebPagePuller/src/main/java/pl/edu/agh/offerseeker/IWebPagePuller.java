@@ -2,6 +2,7 @@ package pl.edu.agh.offerseeker;
 
 import java.io.IOException;
 import java.net.URL;
+import org.jsoup.nodes.Document;
 
 /**
  * Created by bartQH on 2014-10-22.
@@ -9,7 +10,7 @@ import java.net.URL;
 public interface IWebPagePuller {
     /**
      * @param url of page to be pulled
-     * @return pulled page converted to string
+     * @return pulled page converted to JSoupDocument
      */
-    String pullPage(URL url) throws IOException;
+    Document pullPage(URL url) throws IOException;
 }

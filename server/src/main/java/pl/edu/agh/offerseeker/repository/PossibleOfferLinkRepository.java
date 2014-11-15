@@ -10,15 +10,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
+import pl.edu.agh.offerseeker.domain.Offer;
 
 /**
- * 
+ * Repository providing CRUD and paging operations for {@link PossibleOfferLink}
  * @author Szymon Konicki
  *
  */
 @Repository
 public interface PossibleOfferLinkRepository extends PagingAndSortingRepository<PossibleOfferLink, Long> {
-
-	Page<PossibleOfferLink> findByTimestampAfter(@Param("timestamp")Date timestamp, Pageable pageable);
 	PossibleOfferLink findByUrl(@Param("url") URL url);
+	Page<PossibleOfferLink> findByTimestampAfter(@Param("timestamp")Date timestamp, Pageable pageable);
 }

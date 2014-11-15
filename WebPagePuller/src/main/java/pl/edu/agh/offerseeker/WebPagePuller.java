@@ -1,36 +1,32 @@
 package pl.edu.agh.offerseeker;
 
-import java.io.BufferedReader;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class WebPagePuller implements IWebPagePuller {
+    private static final int CONNECTION_RETRY_LIMIT = 5;
+    private static final int CONNECTION_TIMEOUT = 3000;
 
     private InputStreamReader inputStream;
 
     @Override
-    public String pullPage(URL url) throws IOException {
-        URLConnection conn = url.openConnection();
-        inputStream = new InputStreamReader(conn.getInputStream());
-
-        return inputStreamToString(inputStream);
-    }
-
-    /**
-     * @param inputStream Stream that will be converted to plain String
-     * @return Char's from stream in plain String
-     */
-    private String inputStreamToString(InputStreamReader inputStream) throws IOException {
-        BufferedReader reader = new BufferedReader(inputStream);
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-            sb.append("\n");
-        }
-        return sb.toString();
+    public Document pullPage(URL url) throws IOException {
+        int retryCounter = 0;
+        do {
+            try {
+                return Jsoup.parse(url, CONNECTION_TIMEOUT);
+            } catch (SocketTimeoutException e) {
+                System.out.println(retryCounter);
+                if(retryCounter++ >= CONNECTION_RETRY_LIMIT) {
+                    throw e;
+                }
+            }
+        } while (true);
     }
 
 }
