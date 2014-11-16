@@ -64,6 +64,7 @@ public class Offer extends AbstractPersistable<UUID> {
 		super();
 		this.id = id;
 		this.description = description;
+		this.url = url;
 		this.timestamp = new Date();
 	}
 
