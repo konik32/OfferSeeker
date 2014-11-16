@@ -6,7 +6,9 @@ Client::Client(QWidget *parent) :
     ui(new Ui::Client)
 {
     ui->setupUi(this);
-    communicationService = new CommunicationService("http://192.168.200.100:8080/api");
+    filesService = new FilesService();
+    filesService->test();
+    communicationService = new CommunicationService(filesService->getServerAddressFromFile());
     ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
     model = new QStandardItemModel(ui->listView);
 }

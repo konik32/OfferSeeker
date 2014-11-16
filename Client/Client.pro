@@ -18,11 +18,15 @@ SOURCES += main.cpp\
     Controller.cpp \
     offer.cpp \
     statistic.cpp \
-    communicationservice.cpp
+    communicationservice.cpp \
+    filesservice.cpp \
+    keywordsrecord.cpp
 
 HEADERS  += client.h \
     offer.h \
     statistic.h \
-    communicationservice.h
+    communicationservice.h \
+    filesservice.h \
+    keywordsrecord.h
 
 FORMS    += client.ui

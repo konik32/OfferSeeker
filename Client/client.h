@@ -17,6 +17,7 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include "communicationservice.h"
+#include "filesservice.h"
 
 namespace Ui {
 class Client;
@@ -40,6 +41,7 @@ private slots:
 private:
     Ui::Client *ui;
     CommunicationService *communicationService;
+    FilesService *filesService;
     QStandardItemModel *model;
     QList<Offer> offers;
     int current;
