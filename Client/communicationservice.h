@@ -38,6 +38,9 @@ public:
     QList<Offer> getOffers(QString keywords);
     QList<Offer> getOffers(QString keywords, QDateTime timestamp);
 
+    //Domain
+    bool addDomain(QString);
+
     //Test
     void test();
 

@@ -39,7 +39,6 @@ void Client::on_pushButton_2_clicked()
 
 void Client::on_pushButton_clicked(){
     if(ui->lineEdit->text() != ""){
-        communicationService->test();
         offers = communicationService->getOffers(ui->lineEdit->text());
         model->clear();
         ui->url->clear();

@@ -86,6 +86,12 @@ QList<Offer> CommunicationService::getOffers(QString keywords, QDateTime timesta
     return getOffersListFromJSON(jsonString);
 }
 
+bool CommunicationService::addDomain(QString url) {
+    int statusCode = getResponseCodeFromUrl(QUrl(serverAddress+"/domains?url="+url));
+    if(statusCode == 200) return true;
+    else return false;
+}
+
 /*********************Private methods****************************/
 
 QString CommunicationService::getResponseFromUrl(QUrl url){
@@ -138,7 +144,7 @@ QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
         QJsonObject jsonObject = jsonArray[i].toObject();
         QUuid id = QUuid(jsonObject["id"].toString());
         QString description = jsonObject["description"].toString();
-        QString url = "http://google.pl"; //jsonObject["url"].toString();
+        QString url = jsonObject["url"].toString();
         QDateTime timestamp = QDateTime::fromString(jsonObject["timestamp"].toString(), "yyyy-MM-dd");
         offersList.append(Offer(id, description, url, timestamp));
     }
@@ -148,20 +154,91 @@ QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
 
 /*******************Test*********************************/
 void CommunicationService::test() {
+    //Test setOfferValidation(QUuid offerId, bool valid)
+    qDebug()<<"\nTest setOfferValidation(QUuid offerId, bool valid)";
+    qDebug()<<setOfferValidation(QUuid::createUuid(), true);
+    qDebug()<<setOfferValidation(QUuid::createUuid(), false);
+
+    //Test getStatisticCount(...)
+    qDebug()<<"\nTest getStatisticCount(...) x3";
+    qDebug()<<getStatisticCount();
+    qDebug()<<getStatisticCount(true);
+    qDebug()<<getStatisticCount(false);
+
+    //Test getListOfStatistics(...)
+    qDebug()<<"\nTest getListOfStatistics()";
+    QList<Statistic> listS = getListOfStatistics();
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatistics(isOffer)";
+    listS = getListOfStatistics(true);
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatistics(startDate, endDate)";
+    listS = getListOfStatistics(QDateTime::fromString("2014-11-15","yyyy-MM-dd"), QDateTime::fromString("2014-11-16","yyyy-MM-dd"));
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatistics(startDate, endDate, isOffer)";
+    listS = getListOfStatistics(QDateTime::fromString("2014-11-15","yyyy-MM-dd"), QDateTime::fromString("2014-11-16","yyyy-MM-dd"), true);
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatisticsSince(startDate)";
+    listS = getListOfStatisticsSince(QDateTime::fromString("2014-11-15","yyyy-MM-dd"));
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatisticsSince(startDate, isOffer)";
+    listS = getListOfStatisticsSince(QDateTime::fromString("2014-11-15","yyyy-MM-dd"), true);
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatisticsOlderThan(endDate)";
+    listS = getListOfStatisticsOlderThan(QDateTime::fromString("2014-11-15","yyyy-MM-dd"));
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
+
+    qDebug()<<"\nTest getListOfStatisticsOlderThan(endDate, isOffer)";
+    listS = getListOfStatisticsOlderThan(QDateTime::fromString("2014-11-15","yyyy-MM-dd"), true);
+    qDebug()<<listS.size();
+    for(int i=0; i<listS.size(); i++) {
+        qDebug()<<listS[i].getId().toString()+" - "+ listS[i].getValidationDate().toString("yyyy-MM-dd")+" - "<<listS[i].isValid();
+    }
 
     //Test getOffers(keywords)
     QList<Offer> list = getOffers("a");
-    qDebug()<<"Test getOffers(keywords)";
+    qDebug()<<"\nTest getOffers(keywords)";
     qDebug()<<list.size();
     for(int i=0; i<list.size(); i++) {
-        qDebug()<<list[i].getId().toString()+" - "+list[i].getDescription()+" - " + list[i].getUrl() + " - " + list[i].getTimestamp().toString("yyyy-MM-dd");
+        qDebug()<<list[i].getId().toString()+" - "+list[i].getDescription().left(20)+" - " + list[i].getUrl() + " - " + list[i].getTimestamp().toString("yyyy-MM-dd");
     }
 
     //Test getOffers(keywords, timestamp)
     list = getOffers("a", QDateTime::fromString("2014-11-16","yyyy-MM-dd"));
-    qDebug()<<"Test getOffers(keywords, timestamp)";
+    qDebug()<<"\nTest getOffers(keywords, timestamp)";
     qDebug()<<list.size();
     for(int i=0; i<list.size(); i++) {
-        qDebug()<<list[i].getId().toString()+" - "+list[i].getDescription()+" - " + list[i].getUrl() + " - " + list[i].getTimestamp().toString("yyyy-MM-dd");
+        qDebug()<<list[i].getId().toString()+" - "+list[i].getDescription().left(20)+" - " + list[i].getUrl() + " - " + list[i].getTimestamp().toString("yyyy-MM-dd");
     }
+
+    //Test addDomain(url)
+    qDebug()<<"Test addDomain(url)";
+    qDebug()<<addDomain("http://www.allegro.pl");
 }

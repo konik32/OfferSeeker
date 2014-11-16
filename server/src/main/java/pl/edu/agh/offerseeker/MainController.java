@@ -101,7 +101,7 @@ public class MainController {
 		else return repository.findAll();
 	}
 
-	@RequestMapping(value = "/domains", method = RequestMethod.POST)
+	@RequestMapping(value = "/domains", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void postDomain(@RequestParam(value = "url") URL url) {
 		domainRepository.save(new Domain(url));
