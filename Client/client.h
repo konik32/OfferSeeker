@@ -37,17 +37,18 @@ private slots:
     void on_pushButton_clicked();
     void on_listView_clicked();
     void on_przejdz_clicked();
+    void on_dodaj_clicked();
+    void on_clearBtn_clicked();
 
 private:
     Ui::Client *ui;
     CommunicationService *communicationService;
     FilesService *filesService;
-    QStandardItemModel *model;
+    QStandardItemModel *model, *model2;
     QList<Offer> offers;
     int current;
 };
 
-QString postKeyWords();
-void getOffers();
+void observOffers();
 
 #endif // CLIENT_H

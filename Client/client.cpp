@@ -11,6 +11,8 @@ Client::Client(QWidget *parent) :
     communicationService = new CommunicationService(filesService->getServerAddressFromFile());
     ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
     model = new QStandardItemModel(ui->listView);
+    model2 = new QStandardItemModel(20,2,this);
+    observOffers();
 }
 
 
@@ -20,7 +22,7 @@ Client::~Client()
 }
 
 void Client::on_pushButton_3_clicked(){
-    if(ui->textEdit->toPlainText() != "")
+    if(ui->textEdit->toPlainText() != "" && ui->textEdit->toPlainText() != "Podaj czego szukasz")
     {
         if(communicationService->setOfferValidation(offers[current].getId(), false)){
             ui->status->setText("Dziękujemy za informację");
@@ -30,13 +32,12 @@ void Client::on_pushButton_3_clicked(){
 
 void Client::on_pushButton_2_clicked()
 {
-    if(ui->textEdit->toPlainText() != "")
+    if(ui->textEdit->toPlainText() != "" && ui->textEdit->toPlainText() != "Podaj czego szukasz")
     {
         if(communicationService->setOfferValidation(offers[current].getId(), true)){
             ui->status->setText("Dziękujemy za informację");
         }
     }
-    //ui->lineEdit->setText(QString(current));
 }
 
 void Client::on_pushButton_clicked(){
@@ -44,6 +45,7 @@ void Client::on_pushButton_clicked(){
         offers = communicationService->getOffers(ui->lineEdit->text());
         model->clear();
         ui->url->clear();
+        ui->status->clear();
         ui->textEdit->clear();
 
         if(!offers.empty()){
@@ -64,8 +66,6 @@ void Client::on_pushButton_clicked(){
         model->clear();
         ui->textEdit->setText("Podaj czego szukasz");
     }
-
-    //ui->textEdit->setText(QString::number(communicationService->getStatisticCount(true)));
 }
 
 void Client::on_listView_clicked(){
@@ -78,4 +78,17 @@ void Client::on_listView_clicked(){
 void Client::on_przejdz_clicked(){
     QString link = ui->url->text();
     QDesktopServices::openUrl(QUrl(link));
+}
+
+void Client::on_dodaj_clicked(){
+
+}
+
+void Client::on_clearBtn_clicked(){
+    model2->clear();
+}
+
+
+void observOffers(){
+
 }
