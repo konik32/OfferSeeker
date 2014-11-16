@@ -53,7 +53,7 @@ public class Offer extends AbstractPersistable<UUID> {
 	@Analyzer(definition = "polishAnalyzer")
 	private String description;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Field
 	@DateBridge(resolution=Resolution.DAY)
 	private Date timestamp;
