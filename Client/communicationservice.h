@@ -13,6 +13,7 @@ private:
     QString getResponseFromUrl(QUrl url);
     int getResponseCodeFromUrl(QUrl url);
     QList<Statistic> getStatisticsListFromJSON(QString jsonString);
+    QList<Offer> getOffersListFromJSON(QString jsonString);
 
 public:
     CommunicationService();
@@ -35,6 +36,10 @@ public:
 
     //Offers
     QList<Offer> getOffers(QString keywords);
+    QList<Offer> getOffers(QString keywords, QDateTime timestamp);
+
+    //Test
+    void test();
 
 };
 

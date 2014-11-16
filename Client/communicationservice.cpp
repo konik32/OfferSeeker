@@ -78,21 +78,12 @@ QList<Statistic> CommunicationService::getListOfStatisticsOlderThan(QDateTime en
 
 QList<Offer> CommunicationService::getOffers(QString keywords) {
     QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\""));
-    QList<Offer> offersList;
+    return getOffersListFromJSON(jsonString);
+}
 
-    QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
-    QJsonObject jsonMain = jsonDocument.object();
-    QJsonArray jsonArray = jsonMain["content"].toArray();
-
-    for(int i= 0; i< jsonArray.size(); i++) {
-        QJsonObject jsonObject = jsonArray[i].toObject();
-        QUuid id = QUuid(jsonObject["id"].toString());
-        QString description = jsonObject["description"].toString();
-        QString url = jsonObject["url"].toString();
-        offersList.append(Offer(id, description, url));
-    }
-
-    return offersList;
+QList<Offer> CommunicationService::getOffers(QString keywords, QDateTime timestamp) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")));
+    return getOffersListFromJSON(jsonString);
 }
 
 /*********************Private methods****************************/
@@ -134,4 +125,43 @@ QList<Statistic> CommunicationService::getStatisticsListFromJSON(QString jsonStr
     }
 
     return statisticsList;
+}
+
+QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
+    QList<Offer> offersList;
+
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
+    QJsonObject jsonMain = jsonDocument.object();
+    QJsonArray jsonArray = jsonMain["content"].toArray();
+
+    for(int i= 0; i< jsonArray.size(); i++) {
+        QJsonObject jsonObject = jsonArray[i].toObject();
+        QUuid id = QUuid(jsonObject["id"].toString());
+        QString description = jsonObject["description"].toString();
+        QString url = jsonObject["url"].toString();
+        QDateTime timestamp = QDateTime::fromString(jsonObject["timestamp"].toString(), "yyyy-MM-dd");
+        offersList.append(Offer(id, description, url, timestamp));
+    }
+
+    return offersList;
+}
+
+/*******************Test*********************************/
+void CommunicationService::test() {
+
+    //Test getOffers(keywords)
+    QList<Offer> list = getOffers("a");
+    qDebug()<<"Test getOffers(keywords)";
+    qDebug()<<list.size();
+    for(int i=0; i<list.size(); i++) {
+        qDebug()<<list[i].getId().toString()+" - "+list[i].getDescription()+" - " + list[i].getUrl() + " - " + list[i].getTimestamp().toString("yyyy-MM-dd");
+    }
+
+    //Test getOffers(keywords, timestamp)
+    list = getOffers("a", QDateTime::fromString("2014-11-16","yyyy-MM-dd"));
+    qDebug()<<"Test getOffers(keywords, timestamp)";
+    qDebug()<<list.size();
+    for(int i=0; i<list.size(); i++) {
+        qDebug()<<list[i].getId().toString()+" - "+list[i].getDescription()+" - " + list[i].getUrl() + " - " + list[i].getTimestamp().toString("yyyy-MM-dd");
+    }
 }
