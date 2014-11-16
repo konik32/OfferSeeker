@@ -7,6 +7,7 @@ Client::Client(QWidget *parent) :
 {
     ui->setupUi(this);
     communicationService = new CommunicationService("http://192.168.200.100:8080/api");
+    ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
     model = new QStandardItemModel(ui->listView);
 }
 
@@ -16,28 +17,64 @@ Client::~Client()
     delete ui;
 }
 
-
+void Client::on_pushButton_3_clicked(){
+    if(ui->textEdit->toPlainText() != "")
+    {
+        if(communicationService->setOfferValidation(offers[current].getId(), false)){
+            ui->status->setText("Dziękujemy za informację");
+        }
+    }
+}
 
 void Client::on_pushButton_2_clicked()
 {
-    ui->lineEdit->setText("");
+    if(ui->textEdit->toPlainText() != "")
+    {
+        if(communicationService->setOfferValidation(offers[current].getId(), true)){
+            ui->status->setText("Dziękujemy za informację");
+        }
+    }
+    //ui->lineEdit->setText(QString(current));
 }
 
 void Client::on_pushButton_clicked(){
-    offers = communicationService->getOffers(ui->lineEdit->text());
-    //qDebug()<<offers[0].getDescription();
+    if(ui->lineEdit->text() != ""){
+        communicationService->test();
+        offers = communicationService->getOffers(ui->lineEdit->text());
+        model->clear();
+        ui->url->clear();
+        ui->textEdit->clear();
 
-    for(int i=0; i<offers.size(); i++){
-        QStandardItem *item = new QStandardItem();
-        item->setData(QFont("Segoe UI", 12), Qt::FontRole);
-        item->setData(offers[i].getId());
-        item->setText(offers[i].getDescription().left(35)+"...");
-        model->appendRow(item);
+        if(!offers.empty()){
+            for(int i=0; i<offers.size(); i++){
+                QStandardItem *item = new QStandardItem();
+                item->setData(QFont("Segoe UI", 12), Qt::FontRole);
+                item->setData(offers[i].getId());
+                item->setText(offers[i].getDescription().left(30)+"...");
+                model->appendRow(item);
+            }
+            ui->listView->setModel(model);
+        }
+        else{
+            ui->textEdit->setText("Brak Ofert");
+        }
+    }
+    else{
+        model->clear();
+        ui->textEdit->setText("Podaj czego szukasz");
     }
 
-    ui->listView->setModel(model);
-
-
-
     //ui->textEdit->setText(QString::number(communicationService->getStatisticCount(true)));
+}
+
+void Client::on_listView_clicked(){
+    QModelIndex index = ui->listView->selectionModel()->currentIndex();
+    current= index.row();
+    ui->textEdit->setText(offers[current].getDescription());
+    ui->url->setText(offers[current].getUrl());
+}
+
+void Client::on_przejdz_clicked(){
+    QString link = ui->url->text();
+    QDesktopServices::openUrl(QUrl(link));
 }

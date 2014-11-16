@@ -138,7 +138,7 @@ QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
         QJsonObject jsonObject = jsonArray[i].toObject();
         QUuid id = QUuid(jsonObject["id"].toString());
         QString description = jsonObject["description"].toString();
-        QString url = jsonObject["url"].toString();
+        QString url = "http://google.pl"; //jsonObject["url"].toString();
         QDateTime timestamp = QDateTime::fromString(jsonObject["timestamp"].toString(), "yyyy-MM-dd");
         offersList.append(Offer(id, description, url, timestamp));
     }

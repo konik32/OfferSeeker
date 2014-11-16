@@ -13,6 +13,9 @@
 #include <QApplication>
 #include <QUuid>
 #include <QDateTime>
+#include <QRegExpValidator>
+#include <QUrl>
+#include <QDesktopServices>
 #include "communicationservice.h"
 
 namespace Ui {
@@ -29,13 +32,17 @@ public:
 
 private slots:
     void on_pushButton_2_clicked();
+    void on_pushButton_3_clicked();
     void on_pushButton_clicked();
+    void on_listView_clicked();
+    void on_przejdz_clicked();
 
 private:
     Ui::Client *ui;
     CommunicationService *communicationService;
     QStandardItemModel *model;
     QList<Offer> offers;
+    int current;
 };
 
 QString postKeyWords();
