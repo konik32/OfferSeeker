@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QDialog>
 #include <QDebug>
+#include <QStandardItemModel>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
@@ -33,6 +34,8 @@ private slots:
 private:
     Ui::Client *ui;
     CommunicationService *communicationService;
+    QStandardItemModel *model;
+    QList<Offer> offers;
 };
 
 QString postKeyWords();
