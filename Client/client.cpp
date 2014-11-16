@@ -19,6 +19,9 @@ Client::Client(QWidget *parent) :
 Client::~Client()
 {
     delete ui;
+    delete filesService;
+    delete communicationService;
+    offers.clear();
 }
 
 void Client::on_pushButton_3_clicked(){

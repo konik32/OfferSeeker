@@ -5,15 +5,18 @@
 #include <QDateTime>
 #include "offer.h"
 #include "statistic.h"
+#include "keywordsrecord.h"
 
 class CommunicationService
 {
 private:
     QString serverAddress;
+    int offersPagesCount;
     QString getResponseFromUrl(QUrl url);
     int getResponseCodeFromUrl(QUrl url);
     QList<Statistic> getStatisticsListFromJSON(QString jsonString);
     QList<Offer> getOffersListFromJSON(QString jsonString);
+    int getOffersTotalElementsFromJSON(QString jsonString);
 
 public:
     CommunicationService();
@@ -37,6 +40,9 @@ public:
     //Offers
     QList<Offer> getOffers(QString keywords);
     QList<Offer> getOffers(QString keywords, QDateTime timestamp);
+    int getOffersTotalElementsCount(QString keywords);
+    int getOffersTotalElementsCount(QString keywords, QDateTime timestamp);
+    QList<KeywordsRecord> updateCounterNewInKeywordsRecords(QList<KeywordsRecord> records);
 
     //Domain
     bool addDomain(QString);

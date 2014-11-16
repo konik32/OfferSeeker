@@ -78,18 +78,45 @@ QList<Statistic> CommunicationService::getListOfStatisticsOlderThan(QDateTime en
 
 QList<Offer> CommunicationService::getOffers(QString keywords) {
     QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\""));
-    return getOffersListFromJSON(jsonString);
+    QList<Offer> list = getOffersListFromJSON(jsonString);
+    for(int i=1; i<offersPagesCount; i++){
+        jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&page="+QString::number(i)));
+        list.append(getOffersListFromJSON(jsonString));
+    }
+    return list;
 }
 
 QList<Offer> CommunicationService::getOffers(QString keywords, QDateTime timestamp) {
-    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")));
-    return getOffersListFromJSON(jsonString);
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")));    
+    QList<Offer> list = getOffersListFromJSON(jsonString);
+    for(int i=1; i<offersPagesCount; i++){
+        jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")+"&page="+QString::number(i)));
+        list.append(getOffersListFromJSON(jsonString));
+    }
+    return list;
 }
 
 bool CommunicationService::addDomain(QString url) {
     int statusCode = getResponseCodeFromUrl(QUrl(serverAddress+"/domains?url="+url));
     if(statusCode == 200) return true;
     else return false;
+}
+
+int CommunicationService::getOffersTotalElementsCount(QString keywords) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\""));
+    return getOffersTotalElementsFromJSON(jsonString);
+}
+
+int CommunicationService::getOffersTotalElementsCount(QString keywords, QDateTime timestamp) {
+    QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")));
+    return getOffersTotalElementsFromJSON(jsonString);
+}
+
+QList<KeywordsRecord> CommunicationService::updateCounterNewInKeywordsRecords(QList<KeywordsRecord> records) {
+    for(int i=0; i<records.size(); i++) {
+        records[i].setCountNew(getOffersTotalElementsCount(records[i].getKeywords(),records[i].getDate()));
+    }
+    return records;
 }
 
 /*********************Private methods****************************/
@@ -139,6 +166,7 @@ QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
     QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
     QJsonObject jsonMain = jsonDocument.object();
     QJsonArray jsonArray = jsonMain["content"].toArray();
+    offersPagesCount = jsonMain["totalPages"].toInt();
 
     for(int i= 0; i< jsonArray.size(); i++) {
         QJsonObject jsonObject = jsonArray[i].toObject();
@@ -150,6 +178,12 @@ QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
     }
 
     return offersList;
+}
+
+int CommunicationService::getOffersTotalElementsFromJSON(QString jsonString) {
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
+    QJsonObject jsonMain = jsonDocument.object();
+    return jsonMain["totalElements"].toInt();
 }
 
 /*******************Test*********************************/
@@ -223,7 +257,7 @@ void CommunicationService::test() {
     }
 
     //Test getOffers(keywords)
-    QList<Offer> list = getOffers("a");
+    QList<Offer> list = getOffers("i");
     qDebug()<<"\nTest getOffers(keywords)";
     qDebug()<<list.size();
     for(int i=0; i<list.size(); i++) {
@@ -231,7 +265,7 @@ void CommunicationService::test() {
     }
 
     //Test getOffers(keywords, timestamp)
-    list = getOffers("a", QDateTime::fromString("2014-11-16","yyyy-MM-dd"));
+    list = getOffers("i", QDateTime::fromString("2014-11-16","yyyy-MM-dd"));
     qDebug()<<"\nTest getOffers(keywords, timestamp)";
     qDebug()<<list.size();
     for(int i=0; i<list.size(); i++) {
@@ -239,6 +273,22 @@ void CommunicationService::test() {
     }
 
     //Test addDomain(url)
-    qDebug()<<"Test addDomain(url)";
+    qDebug()<<"\nTest addDomain(url)";
     qDebug()<<addDomain("http://www.allegro.pl");
+
+    //Test getOffersTotalElementsCount(...)
+    qDebug()<<"\nTest getOffersTotalElementsCount(...)";
+    qDebug()<<getOffersTotalElementsCount("i");
+    qDebug()<<getOffersTotalElementsCount("i", QDateTime::fromString("2014-11-16", "yyyy-MM-dd"));
+
+    //Test updateCounterNewInKeywordsRecords(...)
+    qDebug()<<"\nTest updateCounterNewInKeywordsRecords(...)";
+    QList<KeywordsRecord> testList;
+    testList.append(KeywordsRecord("i", QDateTime::currentDateTime()));
+    testList.append(KeywordsRecord("a", QDateTime::currentDateTime()));
+    for(int i=0; i<testList.size(); i++)
+       qDebug()<<testList[i].getCountNew();
+    testList = updateCounterNewInKeywordsRecords(testList);
+    for(int i=0; i<testList.size(); i++)
+       qDebug()<<testList[i].getCountNew();
 }

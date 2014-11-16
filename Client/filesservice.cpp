@@ -50,15 +50,41 @@ void FilesService::readKeywordsRecords() {
     QTextStream in(&file);
     while(!in.atEnd()) {
         QString line = in.readLine();
-        QStringList fields = line.split("|");
-        records.append(KeywordsRecord(fields[0], QDateTime::fromString(fields[1],"yyyy-MM-dd")));
+        if(line != "") {
+            QStringList fields = line.split("|");
+            records.append(KeywordsRecord(fields[0], QDateTime::fromString(fields[1],"yyyy-MM-dd")));
+        }
     }
     file.close();
 }
 
 bool FilesService::saveKeywordsRecords() {
-    //TODO
+    QFile file(keywordsRecordsFileName);
+    if(file.open(QIODevice::WriteOnly)) {
+        QTextStream stream( &file );
+        for(int i=0; i<records.size(); i++) {
+            stream << records[i].getKeywords() << "|" << records[i].getDate().toString("yyyy-MM-dd") << endl;
+        }
+        file.close();
+        return true;
+    }
     return false;
+}
+
+bool FilesService::saveServerAddress(QString serverAddress) {
+    QFile file(serverFileName);
+    if(file.open(QIODevice::WriteOnly)) {
+        QTextStream stream( &file );
+        stream << serverAddress;
+        file.close();
+        return true;
+    }
+    return false;
+}
+
+bool FilesService::clearKeywordsRecords() {
+    records.clear();
+    return saveKeywordsRecords();
 }
 
 /****************Test************************/
@@ -66,5 +92,15 @@ void FilesService::test() {
     qDebug()<<"\nTest getServerAddressFromFile()";
     qDebug()<<getServerAddressFromFile();
 
+    //Show records
+    qDebug()<<"Records";
+    for(int i=0; i<records.size(); i++)
+        qDebug()<<records[i].getKeywords()<<" - "<<records[i].getDate().toString("yyyy-MM-dd");
+
+    qDebug()<<"Test addKeywordsRecordsToFile()";
+    qDebug()<<addKeywordsRecordToFile(KeywordsRecord("Test test",QDateTime::currentDateTime()));
+
+//    qDebug()<<"Test clearKeywordsRecords()";
+//    qDebug()<<clearKeywordsRecords();
 
 }

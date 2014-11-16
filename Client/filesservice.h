@@ -18,6 +18,7 @@ public:
     QList<KeywordsRecord> getSavedKeywordsRecords();
     bool addKeywordsRecordToFile(KeywordsRecord record);
     bool saveServerAddress(QString serverAddress);
+    bool clearKeywordsRecords();
 
     //Test
     void test();
