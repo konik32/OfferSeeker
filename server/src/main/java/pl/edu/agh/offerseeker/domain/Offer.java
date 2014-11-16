@@ -1,12 +1,15 @@
 package pl.edu.agh.offerseeker.domain;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.solr.analysis.HunspellStemFilterFactory;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
@@ -15,11 +18,14 @@ import org.apache.solr.analysis.StandardTokenizerFactory;
 import org.apache.solr.analysis.StempelPolishStemFilterFactory;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import pl.edu.agh.offerseeker.commons.model.AbstractPersistable;
 
@@ -46,6 +52,11 @@ public class Offer extends AbstractPersistable<UUID> {
 	@Field
 	@Analyzer(definition = "polishAnalyzer")
 	private String description;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Field
+	@DateBridge(resolution=Resolution.DAY)
+	private Date timestamp;
 
 	private URL url;
 
@@ -53,6 +64,7 @@ public class Offer extends AbstractPersistable<UUID> {
 		super();
 		this.id = id;
 		this.description = description;
+		this.timestamp = new Date();
 	}
 
 	public Offer() {
@@ -87,6 +99,14 @@ public class Offer extends AbstractPersistable<UUID> {
 	@Override
 	public boolean isNew() {
 		return true;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

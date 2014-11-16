@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
-
-
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -24,8 +21,10 @@ import pl.edu.agh.offerseeker.domain.Domain;
 import pl.edu.agh.offerseeker.exceptions.CrawlerInternalException;
 import pl.edu.agh.offerseeker.repository.DomainRepository;
 import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
+
 /**
  * Responsible for crawling domains and search for possible offers links
+ * 
  * @author Szymon Konicki
  *
  */
@@ -43,36 +42,37 @@ public class CrawlerJob {
 
 	@Autowired
 	private PossibleOfferLinkRepository repository;
-	
+
 	@PersistenceContext
 	private EntityManager em;
 
-	@Transactional(propagation=Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void init() {
 		Iterable<Domain> domains = domainRepository.findAll();
-		for (Domain domain : domains) {
-			Set<PossibleOfferLink> visitedUrls;
-			try {
+		Session session = em.unwrap(Session.class);
+		Transaction tx = session.beginTransaction();
+		try {
+			for (Domain domain : domains) {
+				Set<PossibleOfferLink> visitedUrls;
 				visitedUrls = webSpider.crawl(domain.getUrl(), fetchedUrlsCount);
-				Session session = em.unwrap(Session.class);
-				Transaction tx = session.beginTransaction();
 				Iterator<PossibleOfferLink> it = visitedUrls.iterator();
 				int i = 0;
-				while(it.hasNext()){
+				while (it.hasNext()) {
 					PossibleOfferLink link = it.next();
-					if(repository.findByUrl(link.getUrl())!= null) continue;
+					if (repository.findByUrl(link.getUrl()) != null)
+						continue;
 					link.setTimestamp(new Date());
-				    session.save(link);
-				    if ( i++ % 20 == 0 ) {
-				        session.flush();
-				        session.clear();
-				    }
+					session.save(link);
+					if (i++ % 20 == 0) {
+						session.flush();
+						session.clear();
+					}
 				}
-				tx.commit();
-				session.close();
-			} catch (CrawlerInternalException e) {
-				e.printStackTrace();
 			}
+			tx.commit();
+			session.close();
+		} catch (CrawlerInternalException e) {
+			e.printStackTrace();
 		}
 	}
 

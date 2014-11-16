@@ -47,9 +47,9 @@ public class MainController {
 
 	@RequestMapping(value = "/offers", method = RequestMethod.GET)
 	@ResponseBody
-	public Page<Offer> getOffers(@RequestParam(value = "keywords", required=true) String keywords, Pageable pageable) {
+	public Page<Offer> getOffers(@RequestParam(value = "keywords", required=true) String keywords,@RequestParam(value = "timestamp", required=false)@DateTimeFormat(pattern="yyyy-MM-dd") Date timestamp, Pageable pageable) {
 		if(keywords == null || keywords.isEmpty()) return new PageImpl(Collections.emptyList(), pageable, 0);
-		return offersSearchService.findByKeywords(keywords, pageable);
+		return offersSearchService.findByKeywords(keywords, pageable, timestamp);
 	}
 
 	@RequestMapping(value = "/offers/{id}", method = RequestMethod.GET)

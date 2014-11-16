@@ -1,10 +1,13 @@
 package pl.edu.agh.offerseeker.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.search.annotations.Resolution;
+import org.hibernate.search.bridge.builtin.DateBridge;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -29,7 +32,7 @@ public class OffersFullTextSearchService {
 	private EntityManager em;
 
 	/**
-	 * Find offers based on keywords sorted by relevance. Returns offers lists
+	 * Find offers based on keywords and above timestamp sorted by relevance. Returns offers lists
 	 * in pages.
 	 * 
 	 * @param keywords
@@ -37,13 +40,20 @@ public class OffersFullTextSearchService {
 	 * @return
 	 */
 	@Transactional
-	public Page<Offer> findByKeywords(String keywords, Pageable pageable) {
+	public Page<Offer> findByKeywords(String keywords, Pageable pageable, Date timestamp) {
 		FullTextEntityManager ftem = Search.getFullTextEntityManager(em);
 		QueryBuilder qb = ftem.getSearchFactory().buildQueryBuilder().forEntity(Offer.class).get();
 
-		org.apache.lucene.search.Query query = qb.keyword().onFields("description").matching(keywords).createQuery();
+		org.apache.lucene.search.Query finalQuery;
+		org.apache.lucene.search.Query keywordQuery = qb.keyword().onFields("description").matching(keywords).createQuery();
+		if (timestamp != null) {
+			finalQuery = qb.bool().must(keywordQuery)
+					.must(qb.range().onField("timestamp").above(timestamp).createQuery()).createQuery();
+		} else {
+			finalQuery = keywordQuery;
+		}
 
-		FullTextQuery hibQuery = ftem.createFullTextQuery(query, Offer.class);
+		FullTextQuery hibQuery = ftem.createFullTextQuery(finalQuery, Offer.class);
 
 		int total = hibQuery.getResultSize();
 
