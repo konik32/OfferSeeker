@@ -29,6 +29,8 @@ void Client::on_pushButton_3_clicked(){
     {
         if(communicationService->setOfferValidation(offers[current].getId(), false)){
             ui->status->setText("Dziękujemy za informację");
+            ui->pushButton_3->setEnabled(false);
+            ui->pushButton_2->setEnabled(false);
         }
     }
 }
@@ -39,6 +41,8 @@ void Client::on_pushButton_2_clicked()
     {
         if(communicationService->setOfferValidation(offers[current].getId(), true)){
             ui->status->setText("Dziękujemy za informację");
+            ui->pushButton_2->setEnabled(false);
+            ui->pushButton_3->setEnabled(false);
         }
     }
 }
@@ -76,6 +80,9 @@ void Client::on_listView_clicked(){
     current= index.row();
     ui->textEdit->setText(offers[current].getDescription());
     ui->url->setText(offers[current].getUrl());
+    ui->status->clear();
+    ui->pushButton_2->setEnabled(true);
+    ui->pushButton_3->setEnabled(true);
 }
 
 void Client::on_observ_clicked(){
