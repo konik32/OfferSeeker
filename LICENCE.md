@@ -24,3 +24,4 @@ The OfferSeeker Server links to the following external libraries, which have the
 The OfferSeeker Client links to the following external libraries, which have their own licenses:
 
 - [Qt](http://qt-project.org/)
+- [QCustomPlot](http://www.qcustomplot.com/)
