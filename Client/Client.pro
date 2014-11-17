@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = Client
 TEMPLATE = app
@@ -20,13 +20,18 @@ SOURCES += main.cpp\
     statistic.cpp \
     communicationservice.cpp \
     filesservice.cpp \
-    keywordsrecord.cpp
+    keywordsrecord.cpp \
+    statisticsdialog.cpp \
+    qcustomplot.cpp
 
 HEADERS  += client.h \
     offer.h \
     statistic.h \
     communicationservice.h \
     filesservice.h \
-    keywordsrecord.h
+    keywordsrecord.h \
+    statisticsdialog.h \
+    qcustomplot.h
 
-FORMS    += client.ui
+FORMS    += client.ui \
+    statisticsdialog.ui

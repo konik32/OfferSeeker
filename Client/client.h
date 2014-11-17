@@ -39,6 +39,7 @@ private slots:
     void on_przejdz_clicked();
     void on_dodaj_clicked();
     void on_clearBtn_clicked();
+    void on_stat_btn_clicked();
 
 private:
     Ui::Client *ui;
