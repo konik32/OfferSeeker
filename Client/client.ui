@@ -1566,13 +1566,26 @@
     <string>Dodaj do obserwowanych</string>
    </property>
   </widget>
-  <widget class="QTableView" name="observ">
+  <widget class="QPushButton" name="stat_btn">
+   <property name="geometry">
+    <rect>
+     <x>840</x>
+     <y>550</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Statystyki</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="observ">
    <property name="geometry">
     <rect>
      <x>990</x>
-     <y>160</y>
+     <y>190</y>
      <width>201</width>
-     <height>381</height>
+     <height>341</height>
     </rect>
    </property>
    <property name="palette">
@@ -1590,9 +1603,9 @@
       <colorrole role="Base">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
-         <red>58</red>
-         <green>58</green>
-         <blue>58</blue>
+         <red>57</red>
+         <green>57</green>
+         <blue>57</blue>
         </color>
        </brush>
       </colorrole>
@@ -1610,9 +1623,9 @@
       <colorrole role="Base">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
-         <red>58</red>
-         <green>58</green>
-         <blue>58</blue>
+         <red>57</red>
+         <green>57</green>
+         <blue>57</blue>
         </color>
        </brush>
       </colorrole>
@@ -1639,18 +1652,50 @@
      </disabled>
     </palette>
    </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
   </widget>
-  <widget class="QPushButton" name="stat_btn">
+  <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>840</x>
-     <y>550</y>
+     <x>1050</x>
+     <y>160</y>
      <width>111</width>
      <height>21</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI Semibold</family>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
-    <string>Statystyki</string>
+    <string>Słowa Kluczowe</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>990</x>
+     <y>160</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Segoe UI Semibold</family>
+     <pointsize>9</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Ilość</string>
    </property>
   </widget>
  </widget>

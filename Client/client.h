@@ -16,6 +16,7 @@
 #include <QRegExpValidator>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QStaticText>
 #include "communicationservice.h"
 #include "filesservice.h"
 
@@ -40,6 +41,7 @@ private slots:
     void on_dodaj_clicked();
     void on_clearBtn_clicked();
     void on_stat_btn_clicked();
+    void on_observ_clicked();
 
 private:
     Ui::Client *ui;
@@ -47,9 +49,12 @@ private:
     FilesService *filesService;
     QStandardItemModel *model, *model2;
     QList<Offer> offers;
+    QList<KeywordsRecord> keyRecords;
     int current;
+
+    void observOffers();
 };
 
-void observOffers();
+
 
 #endif // CLIENT_H

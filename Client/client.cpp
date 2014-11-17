@@ -78,13 +78,21 @@ void Client::on_listView_clicked(){
     ui->url->setText(offers[current].getUrl());
 }
 
+void Client::on_observ_clicked(){
+    QModelIndex index = ui->observ->selectionModel()->currentIndex();
+    current= index.row();
+    ui->lineEdit->setText(keyRecords[current].getKeywords());
+    on_pushButton_clicked();
+}
+
 void Client::on_przejdz_clicked(){
     QString link = ui->url->text();
     QDesktopServices::openUrl(QUrl(link));
 }
 
 void Client::on_dodaj_clicked(){
-
+    filesService->addKeywordsRecordToFile(KeywordsRecord(ui->lineEdit->text(), QDateTime::currentDateTime()));
+    observOffers();
 }
 
 void Client::on_clearBtn_clicked(){
@@ -92,8 +100,31 @@ void Client::on_clearBtn_clicked(){
 }
 
 
-void observOffers(){
+void Client::observOffers(){
+    keyRecords = communicationService->updateCounterNewInKeywordsRecords(filesService->getSavedKeywordsRecords());
+    model2->clear();
 
+    int i;
+    QString data;
+
+    if(!keyRecords.empty()){
+        for(i=0; i<keyRecords.size(); i++){
+            data.clear();
+            QStandardItem *item = new QStandardItem();
+            item->setData(QFont("Segoe UI", 12), Qt::FontRole);
+            data.append(QString::number(keyRecords[i].getCountNew()));
+            item->setText(data.leftJustified(10, 32)+"   "+keyRecords[i].getKeywords().left(30));
+            model2->appendRow(item);
+        }
+        ui->observ->setModel(model2);
+    }
+    else{
+        QStandardItem *item = new QStandardItem();
+        item->setData(QFont("Segoe UI", 12), Qt::FontRole);
+        item->setText("Brak nowych ofert");
+        model2->appendRow(item);
+        ui->observ->setModel(model2);
+    }
 }
 
 void Client::on_stat_btn_clicked()
