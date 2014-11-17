@@ -21,6 +21,9 @@ public:
     explicit StatisticsDialog(QWidget *parent = 0);
     ~StatisticsDialog();
 
+private slots:
+    void on_stat_btn_clicked();
+
 private:
     Ui::StatisticsDialog *ui;
     void setStartPack();
