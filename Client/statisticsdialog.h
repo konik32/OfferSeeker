@@ -15,6 +15,7 @@ class StatisticsDialog : public QDialog
 private slots:
     void on_startDate_cbox_clicked();
     void on_endDate_cbox_clicked();
+    void on_isoffer_cbox_clicked();
 
 public:
     explicit StatisticsDialog(QWidget *parent = 0);
@@ -22,7 +23,7 @@ public:
 
 private:
     Ui::StatisticsDialog *ui;
-    void setCurrentDate();
+    void setStartPack();
 };
 
 
