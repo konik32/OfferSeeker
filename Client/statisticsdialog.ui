@@ -146,6 +146,9 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="readOnly">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QDateEdit" name="enddateEdit">
    <property name="geometry">
