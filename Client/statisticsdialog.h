@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QDate>
+#include "communicationservice.h"
 
 namespace Ui {
 class StatisticsDialog;
@@ -18,7 +19,7 @@ private slots:
     void on_isoffer_cbox_clicked();
 
 public:
-    explicit StatisticsDialog(QWidget *parent = 0);
+    explicit StatisticsDialog(QWidget *parent = 0, CommunicationService* communicationService = 0);
     ~StatisticsDialog();
 
 private slots:
@@ -27,6 +28,7 @@ private slots:
 private:
     Ui::StatisticsDialog *ui;
     void setStartPack();
+    CommunicationService *communicationService;
 };
 
 

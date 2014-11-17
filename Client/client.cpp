@@ -1,6 +1,5 @@
 #include "client.h"
 #include "ui_client.h"
-#include "statisticsdialog.h"
 
 Client::Client(QWidget *parent) :
     QDialog(parent),
@@ -9,6 +8,8 @@ Client::Client(QWidget *parent) :
     ui->setupUi(this);
     filesService = new FilesService();
     communicationService = new CommunicationService(filesService->getServerAddressFromFile());
+    statisticsDialog = new StatisticsDialog(this, communicationService);
+
     ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
     model = new QStandardItemModel(ui->listView);
     model2 = new QStandardItemModel(20,2,this);
@@ -136,7 +137,6 @@ void Client::observOffers(){
 
 void Client::on_stat_btn_clicked()
 {
-    StatisticsDialog statisticsDialog;
-    statisticsDialog.setModal(true);
-    statisticsDialog.exec();
+    statisticsDialog->setModal(true);
+    statisticsDialog->exec();
 }

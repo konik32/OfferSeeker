@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     filesservice.cpp \
     keywordsrecord.cpp \
     statisticsdialog.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    statisticgraphdata.cpp
 
 HEADERS  += client.h \
     offer.h \
@@ -31,7 +32,8 @@ HEADERS  += client.h \
     filesservice.h \
     keywordsrecord.h \
     statisticsdialog.h \
-    qcustomplot.h
+    qcustomplot.h \
+    statisticgraphdata.h
 
 FORMS    += client.ui \
     statisticsdialog.ui

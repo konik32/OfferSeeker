@@ -19,6 +19,7 @@
 #include <QStaticText>
 #include "communicationservice.h"
 #include "filesservice.h"
+#include "statisticsdialog.h"
 
 namespace Ui {
 class Client;
@@ -47,6 +48,7 @@ private:
     Ui::Client *ui;
     CommunicationService *communicationService;
     FilesService *filesService;
+    StatisticsDialog* statisticsDialog;
     QStandardItemModel *model, *model2;
     QList<Offer> offers;
     QList<KeywordsRecord> keyRecords;

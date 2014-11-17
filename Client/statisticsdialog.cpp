@@ -1,13 +1,17 @@
 #include "statisticsdialog.h"
 #include "ui_statisticsdialog.h"
+#include "statistic.h"
+#include "statisticgraphdata.h"
 
-StatisticsDialog::StatisticsDialog(QWidget *parent) :
+StatisticsDialog::StatisticsDialog(QWidget *parent, CommunicationService* communicationService) :
     QDialog(parent),
     ui(new Ui::StatisticsDialog)
 {
     ui->setupUi(this);
     ui->customPlot->setLocale(QLocale(QLocale::Polish, QLocale::Poland));
+    ui->customPlot->setBackground(QBrush(QColor(235,235,235,255)));
     setStartPack();
+    this->communicationService = communicationService;
 }
 
 StatisticsDialog::~StatisticsDialog()
@@ -57,36 +61,51 @@ void StatisticsDialog::on_isoffer_cbox_clicked(){
 
 void StatisticsDialog::on_stat_btn_clicked()
 {
-    ui->customPlot->clearGraphs();
-    double now = QDateTime::currentDateTime().toTime_t();
-    srand(8);
-    for (int gi=0; gi<2; ++gi)
-    {
-        ui->customPlot->addGraph();
-        QPen pen;
-        pen.setColor(QColor(0, 0, 255, 200));
-        ui->customPlot->graph()->setLineStyle(QCPGraph::lsLine);
-        ui->customPlot->graph()->setPen(pen);
-        ui->customPlot->graph()->setBrush(QBrush(QColor(255/4.0*gi,160,50,150)));
-        ui->customPlot->graph()->setName("Test"+QString::number(gi));
+    QList<Statistic> statisticsTrue = communicationService->getListOfStatistics(true);
+    QList<Statistic> statisticsFalse = communicationService->getListOfStatistics(false);
 
-        QVector<double> time(250), value(250);
-        for (int i=0; i<250; ++i)
-        {
-            time[i] = now + 24*3600*i;
-            if (i == 0)
-                value[i] = (i/50.0+1)*(rand()/(double)RAND_MAX-0.5);
-            else
-                value[i] = fabs(value[i-1])*(1+0.02/4.0*(4-gi)) + (i/50.0+1)*(rand()/(double)RAND_MAX-0.5);
-        }
-        ui->customPlot->graph()->setData(time, value);
-    }
+    StatisticGraphData* graphDataTrue = new StatisticGraphData(statisticsTrue);
+    StatisticGraphData* graphDataFalse = new StatisticGraphData(statisticsFalse);
+
+    double maxData = (graphDataTrue->getMaxDate() > graphDataFalse->getMaxDate())?graphDataTrue->getMaxDate():graphDataFalse->getMaxDate();
+    double minData = (graphDataTrue->getMinDate() > graphDataFalse->getMinDate())?graphDataTrue->getMinDate():graphDataFalse->getMinDate();
+    double maxValue = (graphDataTrue->getMaxValue() > graphDataFalse->getMaxValue())?graphDataTrue->getMaxValue():graphDataFalse->getMaxValue();
+
+    QVector<double> time = graphDataTrue->getTimes(), value = graphDataTrue->getValues();
+    QVector<double> time2 = graphDataFalse->getTimes(), value2 = graphDataFalse->getValues();
+
+//    delete graphDataTrue;
+//    delete graphDataFalse;
+
+    //Plot generating
+    ui->customPlot->clearGraphs();
+    srand(8);
+
+    //true plot
+    int gi=0;
+    ui->customPlot->addGraph();
+    ui->customPlot->graph()->setPen(QPen(Qt::darkGreen));
+//    ui->customPlot->graph()->setBrush(QBrush(QColor(0,140,0,150)));
+    ui->customPlot->graph()->setName("Pozytywne");
+    ui->customPlot->graph()->setData(time, value);
+
+    //false plot
+    gi++;
+    ui->customPlot->addGraph();
+    ui->customPlot->graph()->setPen(QPen(Qt::darkRed));
+//    ui->customPlot->graph()->setBrush(QBrush(QColor(215,0,0,150)));
+    ui->customPlot->graph()->setName("Negatywne");
+    ui->customPlot->graph()->setData(time2, value2);
+
+    ui->customPlot->xAxis->setAutoTickStep(false);
+    ui->customPlot->xAxis->setTickStep(86400); // one month in seconds
+    ui->customPlot->xAxis->setSubTickCount(3);
     ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     ui->customPlot->xAxis->setDateTimeFormat("dd MMMM\nyyyy");
     ui->customPlot->xAxis->setLabel("Data");
     ui->customPlot->yAxis->setLabel("Ilość ocen");
-    ui->customPlot->xAxis->setRange(now, now+24*3600*249);
-    ui->customPlot->yAxis->setRange(0, 60);
+    ui->customPlot->xAxis->setRange(minData-21600, maxData+21600);
+    ui->customPlot->yAxis->setRange(0, maxValue+1);
     ui->customPlot->legend->setVisible(true);
     ui->customPlot->replot();
 }
