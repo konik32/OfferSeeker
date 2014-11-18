@@ -27,13 +27,53 @@ StatisticGraphData::StatisticGraphData(QList<Statistic> statistics)
         }
     }
 
+    maxDate = maxTempDate.toTime_t();
+    minDate = minTempDate.toTime_t();
+
+    int tableSize = (maxDate-minDate) / 86400 + 1; //days counter
+
+    for(int i=0; i<tableSize; i++) {
+        times.append(minDate+(i*86400));
+        values.append(0);
+    }
+
     foreach(QDateTime key, statisticsMap.keys() ) {
-        times.append(key.toTime_t());
-        values.append(statisticsMap[key]);
+        int index = (key.toTime_t()-minDate) / 86400;
+        values[index] = statisticsMap[key];
+    }
+}
+
+StatisticGraphData::StatisticGraphData(QList<Statistic> statistics, QDateTime startDate, QDateTime endDate)
+{
+    QDateTime maxTempDate = startDate;
+    QDateTime minTempDate = endDate;
+    maxValue = 0;
+    QMap<QDateTime, int> statisticsMap;
+
+    for(int i=0; i<statistics.size(); i++) {
+        if(statistics[i].getValidationDate() < minTempDate)
+            minTempDate = statistics[i].getValidationDate();
+        if(statistics[i].getValidationDate() > maxTempDate)
+            maxTempDate = statistics[i].getValidationDate();
+        statisticsMap[statistics[i].getValidationDate()]++;
+        if(statisticsMap[statistics[i].getValidationDate()] > maxValue)
+            maxValue = statisticsMap[statistics[i].getValidationDate()];
     }
 
     maxDate = maxTempDate.toTime_t();
     minDate = minTempDate.toTime_t();
+
+    int tableSize = (maxDate-minDate) / 86400 + 1; //days counter
+
+    for(int i=0; i<tableSize; i++) {
+        times.append(minDate+(i*86400));
+        values.append(0);
+    }
+
+    foreach(QDateTime key, statisticsMap.keys() ) {
+        int index = (key.toTime_t()-minDate) / 86400;
+        values[index] = statisticsMap[key];
+    }
 }
 
 QVector<double> StatisticGraphData::getTimes() { return times; }

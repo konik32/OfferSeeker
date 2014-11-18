@@ -10,8 +10,13 @@ StatisticsDialog::StatisticsDialog(QWidget *parent, CommunicationService* commun
     ui->setupUi(this);
     ui->customPlot->setLocale(QLocale(QLocale::Polish, QLocale::Poland));
     ui->customPlot->setBackground(QBrush(QColor(235,235,235,255)));
-    setStartPack();
     this->communicationService = communicationService;
+    setStartPack();
+    updatePlot();
+    connect(ui->isoffer_rbtn_true,SIGNAL(clicked()),this,SLOT(updatePlot()));
+    connect(ui->isoffer_rbtn_false,SIGNAL(clicked()),this,SLOT(updatePlot()));
+    connect(ui->startdateEdit,SIGNAL(userDateChanged(QDate)),this,SLOT(updatePlot()));
+    connect(ui->enddateEdit,SIGNAL(userDateChanged(QDate)),this,SLOT(updatePlot()));
 }
 
 StatisticsDialog::~StatisticsDialog()
@@ -36,6 +41,7 @@ void StatisticsDialog::on_startDate_cbox_clicked(){
     else{
         ui->startdateEdit->setEnabled(false);
     }
+    updatePlot();
 }
 
 
@@ -46,6 +52,7 @@ void StatisticsDialog::on_endDate_cbox_clicked(){
     else{
         ui->enddateEdit->setEnabled(false);
     }
+    updatePlot();
 }
 
 void StatisticsDialog::on_isoffer_cbox_clicked(){
@@ -57,49 +64,89 @@ void StatisticsDialog::on_isoffer_cbox_clicked(){
         ui->isoffer_rbtn_true->setEnabled(false);
         ui->isoffer_rbtn_false->setEnabled(false);
     }
+    updatePlot();
 }
 
-void StatisticsDialog::on_stat_btn_clicked()
+void StatisticsDialog::updatePlot()
 {
-    QList<Statistic> statisticsTrue = communicationService->getListOfStatistics(true);
-    QList<Statistic> statisticsFalse = communicationService->getListOfStatistics(false);
+    //initial
+    bool isOfferLimited = ui->isoffer_cbox->isChecked();
+    bool onlyTrue = ui->isoffer_rbtn_true->isChecked();
+    bool onlyFalse = ui->isoffer_rbtn_false->isChecked();
+    bool isStartDateChecked = ui->startDate_cbox->isChecked();
+    bool isEndDateChecked = ui->endDate_cbox->isChecked();
+    QDateTime startDate = QDateTime::fromString(ui->startdateEdit->text(), "yyyy-MM-dd");
+    QDateTime endDate = QDateTime::fromString(ui->enddateEdit->text(), "yyyy-MM-dd");
 
-    StatisticGraphData* graphDataTrue = new StatisticGraphData(statisticsTrue);
-    StatisticGraphData* graphDataFalse = new StatisticGraphData(statisticsFalse);
+    //Plotting
+    QList<Statistic> statisticsTrue;
+    QList<Statistic> statisticsFalse;
 
-    double maxData = (graphDataTrue->getMaxDate() > graphDataFalse->getMaxDate())?graphDataTrue->getMaxDate():graphDataFalse->getMaxDate();
-    double minData = (graphDataTrue->getMinDate() > graphDataFalse->getMinDate())?graphDataTrue->getMinDate():graphDataFalse->getMinDate();
-    double maxValue = (graphDataTrue->getMaxValue() > graphDataFalse->getMaxValue())?graphDataTrue->getMaxValue():graphDataFalse->getMaxValue();
+    statisticsTrue = communicationService->getListOfStatistics(true);
+    statisticsFalse = communicationService->getListOfStatistics(false);
 
-    QVector<double> time = graphDataTrue->getTimes(), value = graphDataTrue->getValues();
-    QVector<double> time2 = graphDataFalse->getTimes(), value2 = graphDataFalse->getValues();
+    StatisticGraphData* graphDataTrue;
+    StatisticGraphData* graphDataFalse;
 
-//    delete graphDataTrue;
-//    delete graphDataFalse;
+    if(!isOfferLimited || (isOfferLimited && onlyTrue))
+        graphDataTrue = new StatisticGraphData(statisticsTrue, startDate, endDate);
+    if(!isOfferLimited || (isOfferLimited && onlyFalse))
+        graphDataFalse = new StatisticGraphData(statisticsFalse, startDate, endDate);
+
+    double maxData;
+    double minData;
+    double maxValue;
+
+    if(!isOfferLimited) {
+        if(!isEndDateChecked)
+            maxData = (graphDataTrue->getMaxDate() > graphDataFalse->getMaxDate())?graphDataTrue->getMaxDate():graphDataFalse->getMaxDate();
+        else
+            maxData = endDate.toTime_t();
+        if(!isStartDateChecked)
+            minData = (graphDataTrue->getMinDate() > graphDataFalse->getMinDate())?graphDataTrue->getMinDate():graphDataFalse->getMinDate();
+        else
+            minData = startDate.toTime_t();
+        maxValue = (graphDataTrue->getMaxValue() > graphDataFalse->getMaxValue())?graphDataTrue->getMaxValue():graphDataFalse->getMaxValue();
+    }
+    else if(isOfferLimited && onlyTrue) {
+        maxData = (!isEndDateChecked)?graphDataTrue->getMaxDate():endDate.toTime_t();
+        minData = (!isStartDateChecked)?graphDataTrue->getMinDate():startDate.toTime_t();
+        maxValue = graphDataTrue->getMaxValue();
+    }
+    else if(isOfferLimited && onlyFalse) {
+        maxData = (!isEndDateChecked)?graphDataFalse->getMaxDate():endDate.toTime_t();
+        minData = (!isStartDateChecked)?graphDataFalse->getMinDate():startDate.toTime_t();
+        maxValue = graphDataFalse->getMaxValue();
+    }
 
     //Plot generating
     ui->customPlot->clearGraphs();
-    srand(8);
 
     //true plot
-    int gi=0;
-    ui->customPlot->addGraph();
-    ui->customPlot->graph()->setPen(QPen(Qt::darkGreen));
-//    ui->customPlot->graph()->setBrush(QBrush(QColor(0,140,0,150)));
-    ui->customPlot->graph()->setName("Pozytywne");
-    ui->customPlot->graph()->setData(time, value);
+    if(!isOfferLimited || (isOfferLimited && onlyTrue)) {
+        QVector<double> time = graphDataTrue->getTimes(), value = graphDataTrue->getValues();
+        ui->customPlot->addGraph();
+        ui->customPlot->graph()->setPen(QPen(Qt::darkGreen));
+        ui->customPlot->graph()->setName("Pozytywne");
+        ui->customPlot->graph()->setData(time, value);
+    }
 
     //false plot
-    gi++;
-    ui->customPlot->addGraph();
-    ui->customPlot->graph()->setPen(QPen(Qt::darkRed));
-//    ui->customPlot->graph()->setBrush(QBrush(QColor(215,0,0,150)));
-    ui->customPlot->graph()->setName("Negatywne");
-    ui->customPlot->graph()->setData(time2, value2);
+    if(!isOfferLimited || (isOfferLimited && onlyFalse)) {
+        QVector<double> time2 = graphDataFalse->getTimes(), value2 = graphDataFalse->getValues();
+        ui->customPlot->addGraph();
+        ui->customPlot->graph()->setPen(QPen(Qt::darkRed));
+        ui->customPlot->graph()->setName("Negatywne");
+        ui->customPlot->graph()->setData(time2, value2);
+    }
 
-    ui->customPlot->xAxis->setAutoTickStep(false);
-    ui->customPlot->xAxis->setTickStep(86400); // one month in seconds
-    ui->customPlot->xAxis->setSubTickCount(3);
+    if((maxData-minData)/86400 > 5)
+        ui->customPlot->xAxis->setAutoTickStep(true);
+    else {
+        ui->customPlot->xAxis->setAutoTickStep(false);
+        ui->customPlot->xAxis->setTickStep(86400); // one day in seconds 86400
+        ui->customPlot->xAxis->setSubTickCount(3);
+    }
     ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     ui->customPlot->xAxis->setDateTimeFormat("dd MMMM\nyyyy");
     ui->customPlot->xAxis->setLabel("Data");
@@ -108,4 +155,14 @@ void StatisticsDialog::on_stat_btn_clicked()
     ui->customPlot->yAxis->setRange(0, maxValue+1);
     ui->customPlot->legend->setVisible(true);
     ui->customPlot->replot();
+
+    if(!isEndDateChecked)
+        ui->enddateEdit->setDateTime(QDateTime::fromTime_t(maxData));
+    if(!isStartDateChecked)
+        ui->startdateEdit->setDateTime(QDateTime::fromTime_t(minData));
+
+    if(!isOfferLimited || (isOfferLimited && onlyTrue))
+        delete graphDataTrue;
+    if(!isOfferLimited || (isOfferLimited && onlyFalse))
+        delete graphDataFalse;
 }

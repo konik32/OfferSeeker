@@ -13,6 +13,7 @@ private:
     void test();
 public:
     StatisticGraphData(QList<Statistic>);
+    StatisticGraphData(QList<Statistic>,QDateTime,QDateTime);
     QVector<double> getTimes();
     QVector<double> getValues();
     double getMinDate();
