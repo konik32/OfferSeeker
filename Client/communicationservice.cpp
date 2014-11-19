@@ -75,7 +75,11 @@ QList<Statistic> CommunicationService::getListOfStatisticsOlderThan(QDateTime en
     QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/statistics/list?endDate="+endDate.toString("yyyy-MM-dd")+"&isOffer="+QString::number(isOffer)));
     return getStatisticsListFromJSON(jsonString);
 }
-
+struct cmpByStringLength {
+    bool operator()(const Offer & a, const Offer & b) const {
+        return a.getTimestamp() < b.getTimestamp();
+    }
+};
 QList<Offer> CommunicationService::getOffers(QString keywords) {
     QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\""));
     QList<Offer> list = getOffersListFromJSON(jsonString);
@@ -83,8 +87,12 @@ QList<Offer> CommunicationService::getOffers(QString keywords) {
         jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&page="+QString::number(i)));
         list.append(getOffersListFromJSON(jsonString));
     }
+
+        qSort(list.begin(), list.end(), cmpByStringLength());
     return list;
 }
+
+
 
 QList<Offer> CommunicationService::getOffers(QString keywords, QDateTime timestamp) {
     QString jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")));    
@@ -93,6 +101,7 @@ QList<Offer> CommunicationService::getOffers(QString keywords, QDateTime timesta
         jsonString = getResponseFromUrl(QUrl(serverAddress+"/offers?keywords=\""+keywords+"\"&timestamp="+timestamp.toString("yyyy-MM-dd")+"&page="+QString::number(i)));
         list.append(getOffersListFromJSON(jsonString));
     }
+    qSort(list.begin(), list.end(), cmpByStringLength());
     return list;
 }
 
@@ -160,7 +169,9 @@ QList<Statistic> CommunicationService::getStatisticsListFromJSON(QString jsonStr
     return statisticsList;
 }
 
+
 QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
+    QMultiMap<QDateTime, Offer> offerMap;
     QList<Offer> offersList;
 
     QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toUtf8());
@@ -176,6 +187,9 @@ QList<Offer> CommunicationService::getOffersListFromJSON(QString jsonString) {
         QDateTime timestamp = QDateTime::fromString(jsonObject["timestamp"].toString(), "yyyy-MM-dd");
         offersList.append(Offer(id, description, url, timestamp));
     }
+
+
+
 
     return offersList;
 }

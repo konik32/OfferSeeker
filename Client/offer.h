@@ -13,11 +13,14 @@ private:
 
 
 public:
+    Offer();
     Offer(QUuid, QString, QString, QDateTime);
     QUuid getId();
-    QString getDescription();
+    QString getDescription() const;
     QString getUrl();
-    QDateTime getTimestamp();
+    QDateTime getTimestamp() const;
+
 };
+
 
 #endif // OFFER_H

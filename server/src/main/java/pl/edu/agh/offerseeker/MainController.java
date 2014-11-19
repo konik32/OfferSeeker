@@ -20,6 +20,7 @@ import pl.edu.agh.offerseeker.domain.Domain;
 import pl.edu.agh.offerseeker.domain.Offer;
 import pl.edu.agh.offerseeker.domain.Statistic;
 import pl.edu.agh.offerseeker.repository.DomainRepository;
+import pl.edu.agh.offerseeker.repository.OfferRepository;
 import pl.edu.agh.offerseeker.repository.StatisticRepository;
 import pl.edu.agh.offerseeker.service.OffersFullTextSearchService;
 import pl.edu.agh.offerseeker.service.OffersValidationService;
@@ -43,6 +44,9 @@ public class MainController {
 	private DomainRepository domainRepository;
 	
 	@Autowired
+	private OfferRepository offerRepository;
+
+	@Autowired
 	private OffersFullTextSearchService offersSearchService;
 
 	@RequestMapping(value = "/offers", method = RequestMethod.GET)
@@ -57,6 +61,7 @@ public class MainController {
 	public void getOfferValidation(@RequestParam("isOffer") boolean isOffer, @PathVariable("id") UUID offerID) {
 		offersValidationService.addValidationResponse(offerID, isOffer);
 		offersValidationService.saveStatisticToDatabase(offerID, isOffer);
+		if(!isOffer) offerRepository.delete(offerID);
 	}
 
 	@RequestMapping(value = "/statistics/count", method = RequestMethod.GET)

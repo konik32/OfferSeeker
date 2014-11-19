@@ -20,6 +20,7 @@
 #include "communicationservice.h"
 #include "filesservice.h"
 #include "statisticsdialog.h"
+#include "settingsdialog.h"
 
 namespace Ui {
 class Client;
@@ -44,11 +45,14 @@ private slots:
     void on_stat_btn_clicked();
     void on_observ_clicked();
 
+    void on_settings_btn_clicked();
+
 private:
     Ui::Client *ui;
     CommunicationService *communicationService;
     FilesService *filesService;
     StatisticsDialog* statisticsDialog;
+    SettingsDialog* settingsDialog;
     QStandardItemModel *model, *model2;
     QList<Offer> offers;
     QList<KeywordsRecord> keyRecords;

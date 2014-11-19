@@ -6,14 +6,18 @@ Client::Client(QWidget *parent) :
     ui(new Ui::Client)
 {
     ui->setupUi(this);
+    this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     filesService = new FilesService();
     communicationService = new CommunicationService(filesService->getServerAddressFromFile());
     statisticsDialog = new StatisticsDialog(this, communicationService);
+    settingsDialog = new SettingsDialog(this, communicationService, filesService);
+    connect(ui->lineEdit,SIGNAL(editingFinished()),this,SLOT(on_przejdz_clicked()));
 
     ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
     model = new QStandardItemModel(ui->listView);
     model2 = new QStandardItemModel(20,2,this);
     observOffers();
+    this->setStyleSheet("QLabel{color: white;} QPushButton {color: #eeeeee; border: 1px solid #8f8f91;border-radius: 2px;background-color:  qlineargradient(spread:pad, x1:0.477, y1:1, x2:0.5, y2:0, stop:0 rgba(34, 34, 34, 255), stop:1 rgba(94, 94, 94, 255));min-width: 80px;}QPushButton:pressed {background-color: qlineargradient(spread:pad, x1:0.477, y1:1, x2:0.5, y2:0, stop:0 rgba(79, 79, 79, 255), stop:1 rgba(145, 145, 145, 255));color: #dddddd;}QPushButton:flat {border: none;} QPushButton:default {border-color: white;} QPushButton:disabled {color: #444444; background: qlineargradient(spread:pad, x1:0.477, y1:1, x2:0.5, y2:0, stop:0 rgba(79, 79, 79, 255), stop:1 rgba(145, 145, 145, 255));}");
 }
 
 
@@ -32,6 +36,7 @@ void Client::on_pushButton_3_clicked(){
             ui->status->setText("Dziękujemy za informację");
             ui->pushButton_3->setEnabled(false);
             ui->pushButton_2->setEnabled(false);
+            on_pushButton_clicked();
         }
     }
 }
@@ -57,11 +62,19 @@ void Client::on_pushButton_clicked(){
         ui->textEdit->clear();
 
         if(!offers.empty()){
-            for(int i=0; i<offers.size(); i++){
+            for(int i=offers.size()-1; i>=0; i--){
                 QStandardItem *item = new QStandardItem();
                 item->setData(QFont("Segoe UI", 12), Qt::FontRole);
                 item->setData(offers[i].getId());
-                item->setText(offers[i].getDescription().left(30)+"...");
+
+                QString desc = offers[i].getDescription().left(30)+"...";
+                item->setText(desc);
+                if (offers[i].getTimestamp() == QDateTime::fromString("2014-11-17", "yyyy-MM-dd" )) {
+                    item->setFont(QFont("Segoe UI", 12, QFont::Bold));
+                    item->setBackground(QBrush(QColor(50,50,50)));
+                }
+
+
                 model->appendRow(item);
             }
             ui->listView->setModel(model);
@@ -81,8 +94,9 @@ void Client::on_pushButton_clicked(){
 
 void Client::on_listView_clicked(){
     QModelIndex index = ui->listView->selectionModel()->currentIndex();
-    current= index.row();
-    ui->textEdit->setText(offers[current].getDescription());
+    current= offers.size()-index.row() - 1;
+    QString dateText = "\n\nData znalezienia oferty: "+offers[current].getTimestamp().toString("yyyy-MM-dd");
+    ui->textEdit->setText(offers[current].getDescription()+dateText);
     ui->url->setText(offers[current].getUrl());
     ui->status->clear();
     ui->pushButton_2->setEnabled(true);
@@ -148,4 +162,10 @@ void Client::on_stat_btn_clicked()
     statisticsDialog->setModal(true);
     statisticsDialog->updatePlot();
     statisticsDialog->exec();
+}
+
+void Client::on_settings_btn_clicked()
+{
+    settingsDialog->setModal(true);
+    settingsDialog->exec();
 }

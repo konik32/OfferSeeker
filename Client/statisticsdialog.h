@@ -18,6 +18,10 @@ private slots:
     void on_endDate_cbox_clicked();
     void on_isoffer_cbox_clicked();
 
+    void on_enddateEdit_dateChanged(const QDate &date);
+
+    void on_startdateEdit_dateChanged(const QDate &date);
+
 public slots:
     void updatePlot();
 

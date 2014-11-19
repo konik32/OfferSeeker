@@ -18,10 +18,7 @@ QString FilesService::getServerAddressFromFile() {
     QString serverAddress = "http://localhost:8080/api";
     QFile file(serverFileName);
     if(!file.open(QIODevice::ReadOnly)) {
-        file.open(QIODevice::WriteOnly);
-        QTextStream stream( &file );
-        stream << serverAddress;
-        file.close();
+        saveServerAddress(serverAddress);
         return serverAddress;
     }
 
@@ -54,6 +51,17 @@ bool FilesService::updateKeywordRecorsDate(KeywordsRecord keywordsRecord) {
    return false;
 }
 
+bool FilesService::saveServerAddress(QString serverAddress) {
+    QFile file(serverFileName);
+    if(file.open(QIODevice::WriteOnly)) {
+        QTextStream stream( &file );
+        stream << serverAddress;
+        file.close();
+        return true;
+    }
+    return false;
+}
+
 /*************Private Methods****************/
 
 void FilesService::readKeywordsRecords() {
@@ -82,17 +90,6 @@ bool FilesService::saveKeywordsRecords() {
         for(int i=0; i<records.size(); i++) {
             stream << records[i].getKeywords() << "|" << records[i].getDate().toString("yyyy-MM-dd") << endl;
         }
-        file.close();
-        return true;
-    }
-    return false;
-}
-
-bool FilesService::saveServerAddress(QString serverAddress) {
-    QFile file(serverFileName);
-    if(file.open(QIODevice::WriteOnly)) {
-        QTextStream stream( &file );
-        stream << serverAddress;
         file.close();
         return true;
     }

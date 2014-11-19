@@ -8,6 +8,7 @@ StatisticsDialog::StatisticsDialog(QWidget *parent, CommunicationService* commun
     ui(new Ui::StatisticsDialog)
 {
     ui->setupUi(this);
+    this->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     ui->customPlot->setLocale(QLocale(QLocale::Polish, QLocale::Poland));
     ui->customPlot->setBackground(QBrush(QColor(235,235,235,255)));
     this->communicationService = communicationService;
@@ -184,4 +185,14 @@ void StatisticsDialog::updatePlot()
         delete graphDataTrue;
     if(!isOfferLimited || (isOfferLimited && onlyFalse))
         delete graphDataFalse;
+}
+
+void StatisticsDialog::on_enddateEdit_dateChanged(const QDate &date)
+{
+    ui->startdateEdit->setMaximumDate(date);
+}
+
+void StatisticsDialog::on_startdateEdit_dateChanged(const QDate &date)
+{
+    ui->enddateEdit->setMinimumDate(date);
 }

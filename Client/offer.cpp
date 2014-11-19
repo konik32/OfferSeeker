@@ -1,5 +1,6 @@
 #include "offer.h"
 
+Offer::Offer() {}
 Offer::Offer(QUuid id, QString description, QString url, QDateTime timestamp)
 {
     this->id = id;
@@ -9,6 +10,6 @@ Offer::Offer(QUuid id, QString description, QString url, QDateTime timestamp)
 }
 
 QUuid Offer::getId() { return id; }
-QString Offer::getDescription() { return description; }
+QString Offer::getDescription() const { return description; }
 QString Offer::getUrl() { return url; }
-QDateTime Offer::getTimestamp() { return timestamp; }
+QDateTime Offer::getTimestamp() const { return timestamp; }
