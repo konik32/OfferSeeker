@@ -41,7 +41,7 @@ public class MainController {
 
 	@Autowired
 	private DomainRepository domainRepository;
-
+	
 	@Autowired
 	private OffersFullTextSearchService offersSearchService;
 
