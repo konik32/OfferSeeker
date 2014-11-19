@@ -9,6 +9,7 @@ private:
     QDateTime date;
     int countNew;
 public:
+    KeywordsRecord();
     KeywordsRecord(QString keywords, QDateTime date);
     QString getKeywords();
     QDateTime getDate();

@@ -11,7 +11,7 @@ Client::Client(QWidget *parent) :
     communicationService = new CommunicationService(filesService->getServerAddressFromFile());
     statisticsDialog = new StatisticsDialog(this, communicationService);
     settingsDialog = new SettingsDialog(this, communicationService, filesService);
-    connect(ui->lineEdit,SIGNAL(editingFinished()),this,SLOT(on_przejdz_clicked()));
+    connect(ui->lineEdit,SIGNAL(editingFinished()),this,SLOT(on_pushButton_clicked()));
 
     ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
     model = new QStandardItemModel(ui->listView);
@@ -69,7 +69,17 @@ void Client::on_pushButton_clicked(){
 
                 QString desc = offers[i].getDescription().left(30)+"...";
                 item->setText(desc);
-                if (offers[i].getTimestamp() == QDateTime::fromString("2014-11-17", "yyyy-MM-dd" )) {
+
+                KeywordsRecord last;
+                for(int j=0; j<keyRecords.size(); j++) {
+                    if(keyRecords[j].getKeywords() == ui->lineEdit->text())
+                        last = keyRecords[j];
+                }
+
+                if(lastClickedKey.getDate() < last.getDate() && lastClickedKey.getKeywords() == last.getKeywords())
+                    last = lastClickedKey;
+
+                if (offers[i].getTimestamp().toTime_t() >= last.getDate().toTime_t() - 86400 && ui->lineEdit->text() == last.getKeywords()) {
                     item->setFont(QFont("Segoe UI", 12, QFont::Bold));
                     item->setBackground(QBrush(QColor(50,50,50)));
                 }
@@ -83,7 +93,7 @@ void Client::on_pushButton_clicked(){
             ui->textEdit->setText("Brak Ofert");
         }
 
-        filesService->updateKeywordRecorsDate(KeywordsRecord(ui->lineEdit->text(),QDateTime::currentDateTime()));
+        //filesService->updateKeywordRecorsDate(KeywordsRecord(ui->lineEdit->text(),QDateTime::currentDateTime()));
         observOffers();
     }
     else{
@@ -107,6 +117,7 @@ void Client::on_observ_clicked(){
     QModelIndex index = ui->observ->selectionModel()->currentIndex();
     current= index.row();
     if(!keyRecords.isEmpty()) {
+        lastClickedKey = keyRecords[current];
         ui->lineEdit->setText(keyRecords[current].getKeywords());
         filesService->updateKeywordRecorsDate(keyRecords[current]);
         observOffers();

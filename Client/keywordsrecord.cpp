@@ -1,5 +1,6 @@
 #include "keywordsrecord.h"
 
+KeywordsRecord::KeywordsRecord() {}
 KeywordsRecord::KeywordsRecord(QString keywords, QDateTime date) {
     this->keywords = keywords;
     this->date = date;

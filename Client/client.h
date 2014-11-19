@@ -56,6 +56,7 @@ private:
     QStandardItemModel *model, *model2;
     QList<Offer> offers;
     QList<KeywordsRecord> keyRecords;
+    KeywordsRecord lastClickedKey;
     int current;
 
     void observOffers();
