@@ -17,6 +17,8 @@ private slots:
     void on_startDate_cbox_clicked();
     void on_endDate_cbox_clicked();
     void on_isoffer_cbox_clicked();
+
+public slots:
     void updatePlot();
 
 public:

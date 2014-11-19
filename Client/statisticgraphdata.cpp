@@ -63,6 +63,8 @@ StatisticGraphData::StatisticGraphData(QList<Statistic> statistics, QDateTime st
     maxDate = maxTempDate.toTime_t();
     minDate = minTempDate.toTime_t();
 
+    if(endDate.toTime_t() + 86400 > QDateTime::currentDateTime().toTime_t()) maxDate = QDateTime::currentDateTime().toTime_t();
+
     int tableSize = (maxDate-minDate) / 86400 + 1; //days counter
 
     for(int i=0; i<tableSize; i++) {

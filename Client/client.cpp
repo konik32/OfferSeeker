@@ -69,6 +69,9 @@ void Client::on_pushButton_clicked(){
         else{
             ui->textEdit->setText("Brak Ofert");
         }
+
+        filesService->updateKeywordRecorsDate(KeywordsRecord(ui->lineEdit->text(),QDateTime::currentDateTime()));
+        observOffers();
     }
     else{
         model->clear();
@@ -89,7 +92,11 @@ void Client::on_listView_clicked(){
 void Client::on_observ_clicked(){
     QModelIndex index = ui->observ->selectionModel()->currentIndex();
     current= index.row();
-    ui->lineEdit->setText(keyRecords[current].getKeywords());
+    if(!keyRecords.isEmpty()) {
+        ui->lineEdit->setText(keyRecords[current].getKeywords());
+        filesService->updateKeywordRecorsDate(keyRecords[current]);
+        observOffers();
+    }
     on_pushButton_clicked();
 }
 
@@ -105,6 +112,7 @@ void Client::on_dodaj_clicked(){
 
 void Client::on_clearBtn_clicked(){
     model2->clear();
+    filesService->clearKeywordsRecords();
 }
 
 
@@ -129,7 +137,7 @@ void Client::observOffers(){
     else{
         QStandardItem *item = new QStandardItem();
         item->setData(QFont("Segoe UI", 12), Qt::FontRole);
-        item->setText("Brak nowych ofert");
+        item->setText("Brak obserwowanych ofert");
         model2->appendRow(item);
         ui->observ->setModel(model2);
     }
@@ -138,5 +146,6 @@ void Client::observOffers(){
 void Client::on_stat_btn_clicked()
 {
     statisticsDialog->setModal(true);
+    statisticsDialog->updatePlot();
     statisticsDialog->exec();
 }

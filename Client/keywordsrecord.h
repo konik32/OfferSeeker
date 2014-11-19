@@ -14,6 +14,7 @@ public:
     QDateTime getDate();
     int getCountNew();
     void setCountNew(int countNew);
+    void setCurrentDate();
 };
 
 #endif // KEYWORDSRECORD_H

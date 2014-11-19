@@ -13,3 +13,7 @@ int KeywordsRecord::getCountNew() { return countNew; }
 void KeywordsRecord::setCountNew(int countNew) {
     this->countNew = countNew;
 }
+
+void KeywordsRecord::setCurrentDate() {
+    this->date = QDateTime::currentDateTime();
+}

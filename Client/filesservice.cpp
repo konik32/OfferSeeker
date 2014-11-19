@@ -33,8 +33,25 @@ QString FilesService::getServerAddressFromFile() {
 }
 
 bool FilesService::addKeywordsRecordToFile(KeywordsRecord record) {
-    records.append(record);
-    return saveKeywordsRecords();
+    int i = 0;
+    while(i < records.size() && records[i].getKeywords() != record.getKeywords())
+        i++;
+    if(i == records.size()){
+        records.append(record);
+        return saveKeywordsRecords();
+    }
+    return true;
+}
+
+bool FilesService::updateKeywordRecorsDate(KeywordsRecord keywordsRecord) {
+   int i = 0;
+   while(i < records.size() && records[i].getKeywords() != keywordsRecord.getKeywords())
+       i++;
+   if(i < records.size()) {
+       records[i].setCurrentDate();
+       return saveKeywordsRecords();
+   }
+   return false;
 }
 
 /*************Private Methods****************/

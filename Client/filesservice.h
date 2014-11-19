@@ -19,6 +19,7 @@ public:
     bool addKeywordsRecordToFile(KeywordsRecord record);
     bool saveServerAddress(QString serverAddress);
     bool clearKeywordsRecords();
+    bool updateKeywordRecorsDate(KeywordsRecord);
 
     //Test
     void test();

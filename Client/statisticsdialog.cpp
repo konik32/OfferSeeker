@@ -82,8 +82,27 @@ void StatisticsDialog::updatePlot()
     QList<Statistic> statisticsTrue;
     QList<Statistic> statisticsFalse;
 
-    statisticsTrue = communicationService->getListOfStatistics(true);
-    statisticsFalse = communicationService->getListOfStatistics(false);
+    if(!isOfferLimited || (isOfferLimited && onlyTrue)) {
+        if(isStartDateChecked && isEndDateChecked)
+            statisticsTrue = communicationService->getListOfStatistics(startDate, endDate, true);
+        else if(isStartDateChecked)
+            statisticsTrue = communicationService->getListOfStatisticsSince(startDate, true);
+        else if(isEndDateChecked)
+            statisticsTrue = communicationService->getListOfStatisticsOlderThan(endDate, true);
+        else
+            statisticsTrue = communicationService->getListOfStatistics(true);
+    }
+
+    if(!isOfferLimited || (isOfferLimited && onlyFalse)) {
+        if(isStartDateChecked && isEndDateChecked)
+            statisticsFalse = communicationService->getListOfStatistics(startDate, endDate, false);
+        else if(isStartDateChecked)
+            statisticsFalse = communicationService->getListOfStatisticsSince(startDate, false);
+        else if(isEndDateChecked)
+            statisticsFalse = communicationService->getListOfStatisticsOlderThan(endDate, false);
+        else
+            statisticsFalse = communicationService->getListOfStatistics(false);
+    }
 
     StatisticGraphData* graphDataTrue;
     StatisticGraphData* graphDataFalse;
