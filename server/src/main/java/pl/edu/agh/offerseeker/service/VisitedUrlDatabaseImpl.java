@@ -12,7 +12,7 @@ import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
 public class VisitedUrlDatabaseImpl implements VisitedUrlsDatabase {
 
 	@Autowired
-	private OfferRepository repository;
+	private PossibleOfferLinkRepository repository;
 
 	@Override
 	public boolean isAlreadyVisited(PossibleOfferLink url) {

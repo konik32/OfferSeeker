@@ -22,12 +22,13 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import pl.edu.agh.offerseeker.WebSpider.VisitedUrlsDatabase;
 import pl.edu.agh.offerseeker.repository.PossibleOfferLinkRepository;
-import scala.sys.process.processInternal;
 
 /**
  * 
@@ -71,17 +72,8 @@ public class Scheduler {
 	 * @throws JobInstanceAlreadyCompleteException
 	 * @throws JobParametersInvalidException
 	 */
-	@Scheduled(cron = "${offerseeker.schedule.pageProccessing.cron}")
-	public void schedulePageProcessing() throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
+	public void schedulePageProcessing(Date startTime) throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
 			JobParametersInvalidException {
-		List<JobInstance> jobInstance = jobExplorer.findJobInstancesByJobName(processPossibleOffersJob.getName(), 0, 1);
-		Date startTime = new Date();
-		if (jobInstance != null && jobInstance.size() != 0) {
-			List<JobExecution> jobExecutions = jobExplorer.getJobExecutions(jobInstance.get(0));
-			if (jobExecutions != null && jobExecutions.size() != 0) {
-				startTime = jobExecutions.get(0).getStartTime();
-			}
-		}
 		jobLauncher.run(processPossibleOffersJob, new JobParameters(Collections.singletonMap("lastJobDate", new JobParameter(startTime))));
 	}
 
@@ -89,10 +81,20 @@ public class Scheduler {
 	 * Schedules {@link CrawlerJob}
 	 * 
 	 * @throws MalformedURLException
+	 * @throws JobParametersInvalidException 
+	 * @throws JobInstanceAlreadyCompleteException 
+	 * @throws JobRestartException 
+	 * @throws JobExecutionAlreadyRunningException 
 	 */
 	@Scheduled(cron = "${offerseeker.schedule.crawlerJob.cron}")
-	public void scheduleCrawlerJob() throws MalformedURLException {
+	public void scheduleCrawlerJob() throws MalformedURLException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		if(jobExplorer.findRunningJobExecutions(processPossibleOffersJob.getName()).size()>0){
+			System.out.println("Pominięto wywołanie crawlerJob");
+			return;
+		}
+		Date startDate = new Date();
 		crawlerJob.init();
+		schedulePageProcessing(startDate);
 	}
 
 }

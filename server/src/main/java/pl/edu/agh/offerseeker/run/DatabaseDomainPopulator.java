@@ -42,17 +42,16 @@ public class DatabaseDomainPopulator implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... arg0) throws Exception {
+		Session session = em.unwrap(Session.class);
+		Transaction tx = session.beginTransaction();
 		for (String urlStr : domains) {
 			URL url = new URL(urlStr);
 			if (repository.findByUrl(url) == null) {
-				Session session = em.unwrap(Session.class);
-				Transaction tx = session.beginTransaction();
 				session.persist(new Domain(url));
-				tx.commit();
-				session.close();
 			}
-
 		}
+		tx.commit();
+		session.close();
 	}
 
 }
