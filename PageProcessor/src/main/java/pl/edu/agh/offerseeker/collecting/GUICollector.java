@@ -20,7 +20,7 @@ public class GUICollector extends JFrame {
     private Collector _collector;
 
     public GUICollector() {
-        _collector = new Collector(System.getProperty("user.dir"));
+        _collector = new Collector(System.getProperty("user.home") + "/offer_seeker");
 
         _url = new JTextField();
         add(_url, BorderLayout.NORTH);
@@ -35,7 +35,6 @@ public class GUICollector extends JFrame {
                     WebPagePuller puller = new WebPagePuller();
                     Document page = puller.pullPage(new URL(_url.getText()));
                     String[] lines = new ContentInSeparateLines(page).preprocess().split("\n");
-                    _collector.collect(page);
                     _contentBox.addItem("<<BRAK OFERTY>>");
                     for (String line : lines)
                         _contentBox.addItem(line);
@@ -82,7 +81,7 @@ public class GUICollector extends JFrame {
         });
 
         _collect = new JButton("COLLECT");
-        add(_collect, BorderLayout.SOUTH);
+        //add(_collect, BorderLayout.SOUTH);
 
         setSize(400, 400);
         setVisible(true);

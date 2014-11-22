@@ -1,7 +1,5 @@
 package pl.edu.agh.offerseeker.collecting;
 
-import org.jsoup.nodes.Document;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,13 +12,11 @@ public class Collector {
     private String _baseDir;
     private String _offerDir;
     private String _antiOfferDir;
-    private String _origDir;
 
     public Collector(String baseDir) {
         _baseDir = baseDir;
         _offerDir = _baseDir + "/db/offer/";
         _antiOfferDir = _baseDir + "/db/anti/";
-        _origDir = _baseDir + "/db/orig/";
     }
 
     /* Zapisuje pojedyncza linijke tekstu do pliku do miejsca o  podanej sciezce */
@@ -55,15 +51,6 @@ public class Collector {
         int fileNum = dir.listFiles().length;
         String path = _antiOfferDir + Integer.toString(fileNum + 1);
         writeToFile(content, path);
-    }
-
-    /* Zapisuje całą stronę do pliku */
-    public void collect(Document page) throws IOException {
-        File dir = new File(_origDir);
-        dir.mkdirs();
-        int fileNum = dir.listFiles().length;
-        String path = _origDir + Integer.toString(fileNum + 1);
-        writeToFile(page.toString(), path);
     }
 
 }
