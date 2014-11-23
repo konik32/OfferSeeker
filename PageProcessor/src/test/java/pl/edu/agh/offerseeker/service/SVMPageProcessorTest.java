@@ -25,7 +25,7 @@ public class SVMPageProcessorTest {
 
             Offer testOffer = pageProcessor.processPage(offerUrl);
             String testDescription = testOffer.getDescription();
-
+            System.out.println(testDescription);
             assertEquals(expectedfDescription, testDescription);
         } catch (MalformedURLException mExcept) {
             Assert.fail("MalformedURLException has occurred!");

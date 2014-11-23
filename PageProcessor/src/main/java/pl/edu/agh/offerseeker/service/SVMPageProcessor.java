@@ -25,23 +25,24 @@ public class SVMPageProcessor implements IPageProcessor {
 	private Map<String, Integer> docsStats;
 	private VSM vsm;
 	private Collector collector;
+    private boolean _usingSVM = false;
 
-	public SVMPageProcessor(String dbFilesPath) throws IOException {
-		provider = new Provider(dbFilesPath);
-		docs = provider.getDocs();
+    public SVMPageProcessor(String dbFilesPath, boolean usingSVM) throws IOException {
+        _usingSVM = usingSVM;
+        provider = new Provider(dbFilesPath);
+        docs = provider.getDocs();
 		docsStats = provider.getDocsStats();
 		vsm = new VSM(provider);
 		collector = new Collector(dbFilesPath);
 	}
 
 	public SVMPageProcessor() throws IOException {
-		this(System.getProperty("user.home") +"/offer_seeker");
-	}
+        this(System.getProperty("user.home") + "/offer_seeker", false);
+    }
 
 	public static void main(String[] args) throws IOException {
 		SVMPageProcessor p = new SVMPageProcessor();
-		URL url = new URL("http://olx.pl/oferta/krociec-paliwa-fiat-126p-CID5-ID7TbUx.html");
-		System.out.println("GUM: " + new GumtreePageProcessor().processPage(url).getDescription());
+		URL url = new URL("http://olx.pl/oferta/canon-sx30is-superzoom-x-35-kurier-CID99-ID7T8DH.html#f6821521fe;promoted");
 		Offer offer = p.processPage(url);
 		if (offer == null)
 			System.out.println("Nie znaleziono!");
@@ -53,26 +54,29 @@ public class SVMPageProcessor implements IPageProcessor {
 
 	@Override
 	public Offer processPage(URL url) throws IOException {
-		List<List<Double>> offerFeatures = vsm.getOfferFeatures();
-		List<List<Double>> antiFeatures = vsm.getAntiFeatures();
+        SVM svm = null;
+        if (_usingSVM) {
+            List<List<Double>> offerFeatures = vsm.getOfferFeatures();
+            List<List<Double>> antiFeatures = vsm.getAntiFeatures();
 
-		List<List<Double>> features = new ArrayList<List<Double>>();
-		List<Double> classes = new ArrayList<Double>();
+            List<List<Double>> features = new ArrayList<List<Double>>();
+            List<Double> classes = new ArrayList<Double>();
 
-		for (List<Double> curr : offerFeatures) {
-			classes.add(-1.0);
-			features.add(curr);
-		}
+            for (List<Double> curr : offerFeatures) {
+                classes.add(-1.0);
+                features.add(curr);
+            }
 
-		for (List<Double> curr : antiFeatures) {
-			classes.add(1.0);
-			features.add(curr);
-		}
+            for (List<Double> curr : antiFeatures) {
+                classes.add(1.0);
+                features.add(curr);
+            }
 
-		SVM svm = new SVM();
-		svm_problem prob = svm.getProblem(features, classes);
+            svm = new SVM();
+            svm_problem prob = svm.getProblem(features, classes);
 
-		svm.train(prob);
+            svm.train(prob);
+        }
 
 		WebPagePuller puller = new WebPagePuller();
 		Document txt = puller.pullPage(url);
@@ -86,10 +90,9 @@ public class SVMPageProcessor implements IPageProcessor {
 					offerSupp = curr;
 				}
 			}
-			if (svm.predict(vsm.getFeature(curr)) == -1.0) {
-				if (!provider.isKnown(curr)) {
-					Offer offer = new Offer(curr);
-					collector.collect(txt);
+            if (_usingSVM && svm.predict(vsm.getFeature(curr)) == -1.0) {
+                if (!provider.isKnown(curr)) {
+                    Offer offer = new Offer(curr);
 					collector.collect(curr, offer.getId());
 					return offer;
 				}
@@ -98,7 +101,6 @@ public class SVMPageProcessor implements IPageProcessor {
 
 		if (offerSupp != "") {
 			Offer offer = new Offer(offerSupp);
-			collector.collect(txt);
 			collector.collect(offerSupp, offer.getId());
 			return offer;
 		}

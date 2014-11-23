@@ -10,11 +10,14 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import pl.edu.agh.offerseeker.WebSpider;
 import pl.edu.agh.offerseeker.WebSpider.VisitedUrlsDatabase;
 import pl.edu.agh.offerseeker.commons.model.PossibleOfferLink;
 import pl.edu.agh.offerseeker.exceptions.CrawlerInternalException;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 /**
  * Created by Krzysztof Balon on 2014-10-21.
@@ -54,6 +57,16 @@ public class WebSpiderImplTest {
 			return expectedUrls;
 		}
 
+	}
+
+	public WebSpiderImplTest() {
+		// logback
+		Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		root.setLevel(Level.INFO);
+
+		// log4j
+		org.apache.log4j.Logger.getRootLogger().setLevel(
+				org.apache.log4j.Level.INFO);
 	}
 
 	private boolean deleteDirectoryWithContents(File directory) {
@@ -141,11 +154,6 @@ public class WebSpiderImplTest {
 
 		CollectionVisitedUrlsDatabase visited = new CollectionVisitedUrlsDatabase();
 
-		ExpectedUrls expected = new ExpectedUrls();
-		expected.add(testRootUrl + "/");
-		expected.add(testRootUrl + "/1.html");
-		expected.add(testRootUrl + "/2.html");
-
 		// Run the test.
 		deleteDirectoryWithContents(crawlStorageFolder);
 		WebSpider webSpider = new WebSpiderImpl(crawlStorageFolder,
@@ -154,7 +162,7 @@ public class WebSpiderImplTest {
 		Set<PossibleOfferLink> actual = webSpider.crawl(new URL(seedUrl),
 				fetchedUrlsCount);
 
-		Assert.assertEquals(expected.toSet(), actual);
+		Assert.assertEquals(fetchedUrlsCount, actual.size());
 	}
 
 	@Test

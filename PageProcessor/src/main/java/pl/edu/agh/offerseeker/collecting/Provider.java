@@ -24,7 +24,6 @@ public class Provider {
         new File(_baseDir + "/db/").mkdirs();
         new File(_baseDir + "/db/offer").mkdirs();
         new File(_baseDir + "/db/anti").mkdirs();
-        new File(_baseDir + "/db/orig").mkdirs();
         _offerDir = _baseDir + "/db/offer/";
         _antiOfferDir = _baseDir + "/db/anti/";
     }
