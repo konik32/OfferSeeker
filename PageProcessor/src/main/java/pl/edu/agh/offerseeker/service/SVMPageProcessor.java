@@ -40,7 +40,7 @@ public class SVMPageProcessor implements IPageProcessor {
 
 	public static void main(String[] args) throws IOException {
 		SVMPageProcessor p = new SVMPageProcessor();
-		URL url = new URL("http://olx.pl/oferta/odtwarzacz-blu-ray-sony-komplet-CID99-ID7A8NT.html#14f4effa46;promoted");
+		URL url = new URL("http://olx.pl/oferta/krociec-paliwa-fiat-126p-CID5-ID7TbUx.html");
 		System.out.println("GUM: " + new GumtreePageProcessor().processPage(url).getDescription());
 		Offer offer = p.processPage(url);
 		if (offer == null)
