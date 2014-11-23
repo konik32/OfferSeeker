@@ -51,7 +51,8 @@ public class Crawler extends WebCrawler {
 	}
 
 	@Override
-	public boolean shouldVisit(WebURL url) {
+//	public boolean shouldVisit(WebURL url) {
+	public boolean shouldVisit(Page page, WebURL url) {
 		// Already visited enough URLs?
 		if (visitedUrlsCounter.isLimitReached()) {
 			return false;
