@@ -64,7 +64,7 @@ public class Scheduler {
 	private JobExplorer jobExplorer;
 
 	/**
-	 * Schedules processPossibleOffersJob responsible for processing possible
+	 * Runs processPossibleOffersJob responsible for processing possible
 	 * offers urls into offers
 	 * 
 	 * @throws JobExecutionAlreadyRunningException
@@ -88,10 +88,6 @@ public class Scheduler {
 	 */
 	@Scheduled(cron = "${offerseeker.schedule.crawlerJob.cron}")
 	public void scheduleCrawlerJob() throws MalformedURLException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		if(jobExplorer.findRunningJobExecutions(processPossibleOffersJob.getName()).size()>0){
-			System.out.println("Pominięto wywołanie crawlerJob");
-			return;
-		}
 		Date startDate = new Date();
 		crawlerJob.init();
 		schedulePageProcessing(startDate);

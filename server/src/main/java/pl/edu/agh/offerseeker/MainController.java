@@ -61,7 +61,7 @@ public class MainController {
 	public void getOfferValidation(@RequestParam("isOffer") boolean isOffer, @PathVariable("id") UUID offerID) {
 		offersValidationService.addValidationResponse(offerID, isOffer);
 		offersValidationService.saveStatisticToDatabase(offerID, isOffer);
-		if(!isOffer) offerRepository.delete(offerID);
+		if(!isOffer) offersSearchService.deleteSimilar(offerID);
 	}
 
 	@RequestMapping(value = "/statistics/count", method = RequestMethod.GET)

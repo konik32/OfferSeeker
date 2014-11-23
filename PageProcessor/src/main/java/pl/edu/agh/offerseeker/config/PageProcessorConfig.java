@@ -13,8 +13,8 @@ public class PageProcessorConfig {
 	
 	@Value("${offerseeker.pageprocessor.dbpath}")
 	private String pageProcessorDbPath;
-    @Value("@{offerseeker.pageprocessor.usingsvm}")
-    private boolean pageProcessorUsingSvm;
+    @Value("${offerseeker.pageprocessor.usingsvm}")
+    private Boolean pageProcessorUsingSvm;
 
     @Bean
     public IPageProcessor pageProcessor() throws IOException{
